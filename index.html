@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Conceptarium</title>
+  <meta name="description" content="Conceptarium: interactive 3D visualizations of engineering concepts that are hard to imagine, including eigenvectors, 3D transformations, gradient descent and data structures.">
+  <link rel="stylesheet" href="css/style.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <header class="topbar">
+    <a href="#/" class="brand">Concept<span>arium</span></a>
+    <nav>
+      <a href="#/eigen" data-nav="eigen">Eigenvectors</a>
+      <a href="#/transforms" data-nav="transforms">3D Transforms</a>
+      <a href="#/descent" data-nav="descent">Gradient Descent</a>
+      <a href="#/structures" data-nav="structures">Data Structures</a>
+    </nav>
+  </header>
+  <main id="app"></main>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
