@@ -1,0 +1,162 @@
+// Home page, in three sections:
+//  1. Hero: centred headline over the northern lights, with a 3D planet horizon that rises as you scroll.
+//  2. The concept sky: constellations of concepts; click a star to open it.
+//  3. All concepts: searchable, filterable cards that tilt in 3D.
+import { CATALOG, SUBJECTS } from './catalog.js';
+import { buildSky } from './sky.js';
+
+const TRY = ['structures/tree', 'drawing', 'fourier', 'beam'];
+
+export function mountHome(root) {
+  const tryChips = TRY.map((path) => CATALOG.find((c) => c.path === path)).filter(Boolean);
+  root.innerHTML = `
+    <section class="hero">
+      <div class="hero-sky" data-sky></div>
+      <div class="hero-grid" data-tiles aria-hidden="true"></div>
+      <div class="hero-copy">
+        <p class="eyebrow blur-in" style="--d:0s"><span class="dot"></span>A planetarium for engineering concepts</p>
+        <h1 class="blur-in" style="--d:0.1s">See the concepts you were told to <em>imagine</em></h1>
+        <p class="script blur-in" style="--d:0.3s">from textbook diagrams to living 3D</p>
+        <p class="hero-sub blur-in" style="--d:0.45s">${CATALOG.length} interactive models across engineering drawing, mechanics, maths, ML and data structures. Drag them, change the numbers, watch what happens.</p>
+        <form class="search-bar blur-in" style="--d:0.6s" data-hero-search>
+          <span class="search-icon" aria-hidden="true">⌕</span>
+          <input type="search" placeholder="Search a concept: projection, AVL, Fourier…" aria-label="Search concepts" data-hero-input>
+          <button class="btn" type="submit">Explore →</button>
+        </form>
+        <div class="try blur-in" style="--d:0.75s">
+          <span>Try:</span>
+          ${tryChips.map((c) => `<a class="try-chip" href="#/${c.path}"><b>#</b> ${c.title}</a>`).join('')}
+        </div>
+      </div>
+      <a class="scroll-cue" href="#sky" data-scroll="#sky">See the concept sky ↓</a>
+    </section>
+
+    <section class="sky-section" id="sky">
+      <div class="section-head centered reveal">
+        <span class="pill-tag"><span class="dot"></span>The concept sky</span>
+        <h2>Every subject is a <em>constellation</em></h2>
+        <p>Hover a star to see its name, click to open it. Drag to look around.</p>
+      </div>
+      <div class="sky-frame reveal" data-map></div>
+    </section>
+
+    <section class="catalog" id="catalog">
+      <div class="section-head centered reveal">
+        <span class="pill-tag"><span class="dot"></span>All concepts</span>
+        <h2>Pick a concept. <em>Learn it by moving it.</em></h2>
+      </div>
+      <div class="catalog-tools reveal">
+        <input type="search" placeholder="Filter concepts…" data-search aria-label="Filter concepts">
+        <div class="chips" data-chips>
+          <button class="chip active" data-subject="">All</button>
+          ${Object.entries(SUBJECTS).map(([key, s]) => `<button class="chip" data-subject="${key}" style="--c:${s.color}">${s.name}</button>`).join('')}
+        </div>
+      </div>
+      <div class="cards" data-cards></div>
+      <p class="empty" data-empty hidden>No concept matches that search yet.</p>
+    </section>
+  `;
+
+  const $ = (sel) => root.querySelector(sel);
+  const state = { query: '', subject: '' };
+
+  // --- Cards -------------------------------------------------------------
+  function renderCards() {
+    const q = state.query.trim().toLowerCase();
+    const list = CATALOG.filter((c) => (!state.subject || c.subject === state.subject)
+      && (!q || `${c.title} ${c.blurb} ${SUBJECTS[c.subject].name}`.toLowerCase().includes(q)));
+    $('[data-cards]').innerHTML = list.map((c, i) => {
+      const s = SUBJECTS[c.subject];
+      return `
+        <a class="card reveal" href="#/${c.path}" style="--c:${s.color}; --d:${(i % 4) * 0.08}s">
+          <div class="card-top">
+            <span class="card-icon" aria-hidden="true">${c.icon}</span>
+            <small>${s.name}</small>
+          </div>
+          <h2>${c.title}</h2>
+          <p>${c.blurb}</p>
+          <span class="go">Explore →</span>
+        </a>`;
+    }).join('');
+    $('[data-empty]').hidden = list.length > 0;
+    root.querySelectorAll('.cards .reveal').forEach((el) => revealer.observe(el));
+  }
+
+  // Sections and cards blur-and-fade in the first time they scroll into view.
+  const revealer = new IntersectionObserver((entries) => {
+    for (const entry of entries) {
+      if (!entry.isIntersecting) continue;
+      entry.target.classList.add('in');
+      revealer.unobserve(entry.target);
+    }
+  }, { root, threshold: 0.12 });
+  root.querySelectorAll('.reveal').forEach((el) => revealer.observe(el));
+
+  $('[data-search]').addEventListener('input', (e) => {
+    state.query = e.target.value;
+    renderCards();
+  });
+  root.querySelectorAll('[data-subject]').forEach((chip) => chip.addEventListener('click', () => {
+    state.subject = chip.dataset.subject;
+    root.querySelectorAll('[data-subject]').forEach((c) => c.classList.toggle('active', c === chip));
+    renderCards();
+  }));
+
+  // The hero search filters the catalog and scrolls down to it.
+  $('[data-hero-search]').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const q = $('[data-hero-input]').value;
+    $('[data-search]').value = q;
+    state.query = q;
+    renderCards();
+    $('#catalog').scrollIntoView({ behavior: 'smooth' });
+  });
+  root.querySelectorAll('[data-scroll]').forEach((a) => a.addEventListener('click', (e) => {
+    e.preventDefault();
+    $(a.dataset.scroll).scrollIntoView({ behavior: 'smooth' });
+  }));
+
+  // 3D tilt: each card leans towards the pointer (its layers sit at different depths in CSS),
+  // and a soft glow follows the cursor. One delegated listener covers cards re-rendered by search.
+  const MAX_TILT = 9; // degrees
+  const cards = $('[data-cards]');
+  cards.addEventListener('pointermove', (e) => {
+    const card = e.target.closest('.card');
+    if (!card || e.pointerType === 'touch') return;
+    const r = card.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width;
+    const py = (e.clientY - r.top) / r.height;
+    card.style.transform = `rotateY(${(px - 0.5) * 2 * MAX_TILT}deg) rotateX(${(0.5 - py) * 2 * MAX_TILT}deg) translateZ(6px)`;
+    card.style.setProperty('--mx', `${px * 100}%`);
+    card.style.setProperty('--my', `${py * 100}%`);
+  });
+  cards.addEventListener('pointerout', (e) => {
+    const card = e.target.closest('.card');
+    if (card && !card.contains(e.relatedTarget)) card.style.transform = '';
+  });
+
+  renderCards();
+  scatterTiles($('[data-tiles]'));
+
+  const hero = buildSky($('[data-sky]'), { mode: 'hero', scrollEl: root });
+  const map = buildSky($('[data-map]'), { mode: 'map' });
+  return () => {
+    revealer.disconnect();
+    hero.dispose();
+    map.dispose();
+  };
+}
+
+// A few grid squares that glow and fade at random, over the faint grid lines drawn in CSS.
+function scatterTiles(container) {
+  const CELL = 48;
+  for (let i = 0; i < 22; i++) {
+    const tile = document.createElement('span');
+    tile.className = 'tile';
+    tile.style.left = `${Math.floor(Math.random() * 40) * CELL}px`;
+    tile.style.top = `${Math.floor(Math.random() * 16) * CELL}px`;
+    tile.style.animationDelay = `${(Math.random() * 6).toFixed(2)}s`;
+    tile.style.animationDuration = `${(4 + Math.random() * 4).toFixed(2)}s`;
+    container.appendChild(tile);
+  }
+}

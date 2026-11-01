@@ -81,6 +81,13 @@ export const graphTab = {
     });
     $('[data-lift]').addEventListener('change', () => ctx.redraw(layout(graph, last, algo(), lift())));
 
+    // Click a node: make it the start and run the selected algorithm from there.
+    ctx.onNodeClick = (id) => {
+      if (!id.startsWith('g-')) return;
+      $('[data-start]').value = id.slice(2);
+      $('[data-run]').click();
+    };
+
     function renderStats(final) {
       const V = graph.nodes.length;
       const E = graph.edges.length;

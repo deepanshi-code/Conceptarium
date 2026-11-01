@@ -81,6 +81,15 @@ export const treeTab = {
     }));
     $('[data-compare]').addEventListener('change', () => ctx.redraw(layout(avl.snapshot(tree.root), {}, compare() ? avl.snapshot(plain.root) : null)));
 
+    // Click a node in the AVL tree: search for its key (and leave it in the box, ready for Delete).
+    ctx.onNodeClick = (id) => {
+      const find = (n) => (!n ? null : n.id === id ? n : find(n.left) ?? find(n.right));
+      const node = find(tree.root);
+      if (!node) return;
+      $('[data-key]').value = node.key;
+      ctx.run(toFrames(avl.search(tree, node.key)));
+    };
+
     function renderStats() {
       const n = avl.size(tree.root);
       ctx.setStats(`

@@ -4,7 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Conceptarium</title>
-  <meta name="description" content="Conceptarium: interactive 3D visualizations of engineering concepts that are hard to imagine, including eigenvectors, 3D transformations, gradient descent and data structures.">
+  <meta name="description" content="Conceptarium: interactive 3D visualizations of engineering concepts that are hard to imagine: engineering drawing, mechanics, mathematics, computer graphics, machine learning and data structures.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
   <script type="importmap">
     {
@@ -17,13 +20,13 @@
 </head>
 <body>
   <header class="topbar">
-    <a href="#/" class="brand">Concept<span>arium</span></a>
-    <nav>
-      <a href="#/eigen" data-nav="eigen">Eigenvectors</a>
-      <a href="#/transforms" data-nav="transforms">3D Transforms</a>
-      <a href="#/descent" data-nav="descent">Gradient Descent</a>
-      <a href="#/structures" data-nav="structures">Data Structures</a>
-    </nav>
+    <a href="#/" class="brand"><span class="logo" aria-hidden="true">✦</span><span class="brand-name">Concept<em>arium</em></span></a>
+    <nav class="crumbs" data-crumbs aria-label="Breadcrumb"></nav>
+    <div class="top-actions">
+      <a class="nav-btn concept-only" data-prev aria-label="Previous concept">←</a>
+      <a class="nav-btn concept-only next" data-next></a>
+      <a class="nav-btn ghost" href="#/">All concepts</a>
+    </div>
   </header>
   <main id="app"></main>
   <script type="module" src="js/main.js"></script>

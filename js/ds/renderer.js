@@ -61,6 +61,7 @@ export function createGraphRenderer(stage) {
       node.mesh = buildMesh(spec);
       if (node.mesh) node.group.add(node.mesh);
     }
+    if (node.mesh) node.mesh.userData.nodeId = spec.id; // lets clicks be mapped back to the data
     node.spec = spec;
     const half = halfExtents(spec);
     if (node.mesh) {
@@ -267,6 +268,11 @@ export function createGraphRenderer(stage) {
       for (const [id, node] of nodes) removeNode(id, node);
       for (const [key, edge] of edges) removeEdge(key, edge);
       fit.force = true;
+    },
+
+    /** Meshes of the nodes currently on screen, for click picking (each carries userData.nodeId). */
+    meshes() {
+      return [...nodes.values()].filter((n) => n.mesh && !n.leaving).map((n) => n.mesh);
     },
 
     /** Camera direction (from target towards camera) used the next time the view is reframed after clear(). */

@@ -55,6 +55,23 @@ export const heapTab = {
     }));
     $('[data-links]').addEventListener('change', () => ctx.redraw(layout(h.items, {}, links())));
 
+    // Click any node (in the tree or the array): highlight its parent and children by index arithmetic.
+    ctx.onNodeClick = (id) => {
+      const itemId = id.replace(/^arr-/, '');
+      const i = h.items.findIndex((it) => it.id === itemId);
+      if (i < 0) return;
+      const at = (k) => h.items[k];
+      const p = heap.parent(i);
+      const kids = [2 * i + 1, 2 * i + 2].filter((k) => k < h.items.length);
+      const hl = { [at(i).id]: 'active' };
+      if (i > 0) hl[at(p).id] = 'visit';
+      kids.forEach((k) => { hl[at(k).id] = 'new'; });
+      $('[data-value]').value = at(i).value;
+      const parentText = i > 0 ? `parent at ⌊(${i}−1)/2⌋ = ${p} (value ${at(p).value})` : 'no parent: it is the root';
+      const kidText = kids.length ? `children at 2i+1, 2i+2 = ${kids.map((k) => `${k} (value ${at(k).value})`).join(' and ')}` : 'no children: it is a leaf';
+      ctx.run([{ message: `Index <b>${i}</b> holds ${at(i).value}: ${parentText}; ${kidText}. No pointers needed, just arithmetic.`, layout: layout(h.items, hl, links()) }]);
+    };
+
     function renderStats() {
       const n = h.items.length;
       ctx.setStats(`

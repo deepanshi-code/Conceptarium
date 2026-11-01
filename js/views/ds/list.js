@@ -84,6 +84,25 @@ export const listTab = {
       }[radio.value]);
     }));
 
+    // Click a list node or an array cell to see where it lives in memory.
+    ctx.onNodeClick = (id) => {
+      const st = snapshot(mem);
+      const li = st.list.findIndex((n) => n.id === id);
+      if (li >= 0) {
+        const n = st.list[li];
+        const next = st.list[li + 1] ?? (st.kind === 'circular' && st.list.length > 1 ? st.list[0] : null);
+        $('[data-value]').value = n.value;
+        $('[data-index]').value = li;
+        ctx.run([{ message: `List node ${li} holds <b>${n.value}</b> at ${cellAddress(n.cell)}. Its <code>next</code> pointer stores ${next ? cellAddress(next.cell) : 'NULL'}: the only way to find the next node.`, layout: layout(st, { [id]: 'found' }) }]);
+        return;
+      }
+      const ai = st.array.findIndex((x) => x && x.id === id);
+      if (ai >= 0) {
+        $('[data-index]').value = ai;
+        ctx.run([{ message: `a[${ai}] = <b>${st.array[ai].value}</b> at ${cellAddress(ai)} = base + ${ai} × 16. Neighbours are always next door in memory.`, layout: layout(st, { [id]: 'found' }) }]);
+      }
+    };
+
     function renderStats() {
       ctx.setStats(`
         ${stat('List nodes', mem.list.length)}

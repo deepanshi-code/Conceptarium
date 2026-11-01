@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { createStage, setArrow, makeLabel, COLORS } from '../stage.js';
 import { det3, eigen3, lerpFromIdentity, mulVec3 } from '../linalg.js';
 import { matrixInputs, formatNumber, html } from '../ui.js';
+import { interact, rayOnPlane, cameraPlane } from '../interact.js';
 
 const c60 = 0.5;
 const s60 = Math.sqrt(3) / 2;
@@ -113,6 +114,12 @@ export function mountEigen(root) {
     const a = new THREE.ArrowHelper(new THREE.Vector3(1, 0, 0), new THREE.Vector3(), 1, color);
     scene.add(a);
     return a;
+  });
+  // Invisible grab handles at each basis tip: much easier to catch with the mouse than the thin arrowheads.
+  const tipHandles = basisArrows.map(() => {
+    const h = new THREE.Mesh(new THREE.SphereGeometry(0.3, 12, 8), new THREE.MeshBasicMaterial({ visible: false }));
+    scene.add(h);
+    return h;
   });
 
   const sampleDirs = fibonacciSphere(18).map((v) => v.multiplyScalar(1.4));
@@ -249,6 +256,7 @@ export function mountEigen(root) {
 
     basisArrows.forEach((arrow, i) => {
       setArrow(arrow, new THREE.Vector3(M[0][i], M[1][i], M[2][i]));
+      tipHandles[i].position.set(M[0][i], M[1][i], M[2][i]);
     });
     sampleArrows.forEach((arrow, i) => {
       const v = sampleDirs[i];
@@ -263,8 +271,36 @@ export function mountEigen(root) {
     }
   }
 
+  // Drag a basis-vector tip: that vector IS a column of A, so the matrix, eigenvalues and eigenvectors
+  // all update live. Values snap to 0.1 so the matrix stays readable.
+  const NAMES = ['î', 'ĵ', 'k̂'];
+  const stopInteract = interact(stage, {
+    pick: () => tipHandles,
+    onDown: (hit) => {
+      const col = tipHandles.indexOf(hit.object);
+      state.playing = false;
+      if (state.t < 1) setT(1);
+      const plane = cameraPlane(stage.camera, hit.object.getWorldPosition(new THREE.Vector3()));
+      $('[data-preset]').value = '';
+      return {
+        move: (ray) => {
+          const p = rayOnPlane(ray, plane);
+          if (!p) return;
+          const snap = (v) => Math.round(THREE.MathUtils.clamp(v, -3, 3) * 10) / 10;
+          [p.x, p.y, p.z].forEach((v, row) => { state.matrix[row][col] = snap(v); });
+          matrixUI.set(state.matrix);
+          $('[data-notice]').innerHTML = `You moved <b>${NAMES[col]}</b>, so column ${col + 1} of A is now (${state.matrix.map((r) => formatNumber(r[col])).join(', ')}). Watch the eigenvalues and gold lines react.`;
+          rebuildEigen();
+        },
+      };
+    },
+  });
+
   applyPreset('stretch');
-  return () => stage.dispose();
+  return () => {
+    stopInteract();
+    stage.dispose();
+  };
 }
 
 // --- Helpers ---------------------------------------------------------------

@@ -1,73 +1,71 @@
-// Hash router: each route mounts a view into #app and returns a cleanup function.
+// Hash router. Routes look like #/drawing or #/structures/heap; each view mounts into #app and returns a cleanup.
 import { mountEigen } from './views/eigen.js';
 import { mountTransforms } from './views/transforms.js';
 import { mountDescent } from './views/descent.js';
 import { mountStructures } from './views/structures.js';
-import { html } from './ui.js';
+import { mountDrawing } from './views/drawing.js';
+import { mountDevelopment } from './views/development.js';
+import { mountBeam } from './views/beam.js';
+import { mountFourier } from './views/fourier.js';
+import { mountHome } from './home.js';
+import { showCoach } from './coach.js';
+import { CATALOG, SUBJECTS, findByPath } from './catalog.js';
 
-const ROUTES = {
+const VIEWS = {
   eigen: mountEigen,
   transforms: mountTransforms,
   descent: mountDescent,
   structures: mountStructures,
+  drawing: mountDrawing,
+  development: mountDevelopment,
+  beam: mountBeam,
+  fourier: mountFourier,
 };
-
-const TOPICS = [
-  {
-    route: 'eigen',
-    subject: 'Engineering Mathematics · Linear Algebra',
-    title: 'Matrix & Eigenvectors',
-    text: 'Watch a 3×3 matrix bend all of space, and see which directions refuse to turn.',
-  },
-  {
-    route: 'transforms',
-    subject: 'Computer Graphics',
-    title: '3D Transformations',
-    text: 'Build the 4×4 model matrix from translate, rotate and scale, and see why order matters.',
-  },
-  {
-    route: 'descent',
-    subject: 'Machine Learning · Optimization',
-    title: 'Gradient Descent',
-    text: 'Roll gradient descent, Momentum and Adam down a loss surface. Watch them zig-zag, stall on saddles and diverge.',
-  },
-  {
-    route: 'structures',
-    subject: 'Data Structures',
-    title: 'Lists, Trees, Heaps, Graphs & Hashing',
-    text: 'See lists scattered across memory, AVL rotations, B+ tree splits, BFS and Dijkstra rising by distance, and hash collisions stacking up, all step by step.',
-  },
-];
 
 const app = document.getElementById('app');
 let unmount = null;
 
-function mountHome(root) {
-  root.innerHTML = html`
-    <section class="home">
-      <h1>See the concepts you were told to <em>imagine</em>.</h1>
-      <p>Interactive 3D models of engineering topics that are hard to picture from a textbook. Drag to orbit, scroll to zoom, change the numbers and watch what happens.</p>
-      <div class="cards">
-        ${TOPICS.map((t) => html`
-          <a class="card" href="#/${t.route}">
-            <small>${t.subject}</small>
-            <h2>${t.title}</h2>
-            <p>${t.text}</p>
-            <span class="go">Open →</span>
-          </a>`).join('')}
-      </div>
-    </section>
-  `;
-  return null;
-}
+const currentPath = () => location.hash.replace(/^#\/?/, '');
 
 function render() {
-  const route = location.hash.replace(/^#\/?/, '');
+  const path = currentPath();
+  const [route, arg] = path.split('/');
   unmount?.();
-  app.className = ROUTES[route] ? 'view' : '';
-  unmount = (ROUTES[route] ?? mountHome)(app);
-  document.querySelectorAll('[data-nav]').forEach((a) => a.classList.toggle('active', a.dataset.nav === route));
+  unmount = null;
+  const mount = VIEWS[route];
+  app.className = mount ? 'view' : 'home-view';
+  app.replaceChildren();
+  unmount = mount ? mount(app, arg) : mountHome(app);
+  window.scrollTo(0, 0);
+  refreshChrome();
+}
+
+// Breadcrumbs, prev/next and the "Start here" coach all follow the current concept.
+function refreshChrome() {
+  const concept = findByPath(currentPath());
+  const crumbs = document.querySelector('[data-crumbs]');
+  const prev = document.querySelector('[data-prev]');
+  const next = document.querySelector('[data-next]');
+  document.body.classList.toggle('in-concept', Boolean(concept));
+  if (!concept) {
+    crumbs.innerHTML = '';
+    document.title = 'Conceptarium';
+    return;
+  }
+  const subject = SUBJECTS[concept.subject];
+  crumbs.innerHTML = `<span class="crumb-subject" style="--c:${subject.color}">${subject.name}</span><span class="crumb-sep">›</span><span>${concept.title}</span>`;
+  document.title = `${concept.title} · Conceptarium`;
+  const i = CATALOG.indexOf(concept);
+  const before = CATALOG[(i - 1 + CATALOG.length) % CATALOG.length];
+  const after = CATALOG[(i + 1) % CATALOG.length];
+  prev.href = `#/${before.path}`;
+  prev.title = `Previous: ${before.title}`;
+  next.href = `#/${after.path}`;
+  next.innerHTML = `Next: ${after.title} →`;
+  const viewport = app.querySelector('.viewport');
+  if (viewport) showCoach(viewport, concept);
 }
 
 window.addEventListener('hashchange', render);
+window.addEventListener('concept-change', refreshChrome);
 render();

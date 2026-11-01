@@ -81,6 +81,20 @@ export const hashTab = {
     $('[data-mode]').addEventListener('change', () => reset(`${hash.MODES[$('[data-mode]').value]}: table cleared.`));
     $('[data-size]').addEventListener('change', () => reset(`Table size m = ${$('[data-size]').value}: table cleared.`));
 
+    // Click a stored key to search for it (watch the probe path), or a slot to see which keys belong there.
+    ctx.onNodeClick = (id) => {
+      if (id.startsWith('slot-')) {
+        const i = Number(id.slice(5));
+        ctx.say(`Slot ${i} is the home of every key k with k mod ${table.size} = ${i}, e.g. ${i}, ${i + table.size}, ${i + 2 * table.size}.`);
+        return;
+      }
+      const all = table.mode === 'chaining' ? table.slots.flat() : table.slots.filter((c) => c && !c.tomb);
+      const item = all.find((x) => x.id === id);
+      if (!item) return;
+      $('[data-key]').value = item.key;
+      play(hash.search(table, item.key).frames);
+    };
+
     function renderStats() {
       const n = hash.count(table);
       const alpha = n / table.size;

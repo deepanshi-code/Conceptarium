@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Interactive 3D visualizations of engineering concepts: eigenvectors, 3D transformations, gradient descent and data structures.",
+  "description": "Conceptarium: interactive 3D visualizations of engineering concepts: engineering drawing, mechanics, maths, graphics, ML and data structures.",
   "scripts": {
-    "start": "python -m http.server 5173",
-    "test": "node --test tests/linalg.test.mjs tests/optim.test.mjs tests/ds.test.mjs tests/graph-hash.test.mjs"
+    "start": "python serve.py",
+    "test": "node --test tests/linalg.test.mjs tests/optim.test.mjs tests/ds.test.mjs tests/graph-hash.test.mjs tests/beam-fourier.test.mjs"
   }
 }

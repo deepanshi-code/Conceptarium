@@ -3,6 +3,7 @@
 import * as THREE from 'three';
 import { createStage } from '../stage.js';
 import { createGraphRenderer, STATE_COLORS } from '../ds/renderer.js';
+import { interact } from '../interact.js';
 import { html } from '../ui.js';
 import { listTab } from './ds/list.js';
 import { treeTab } from './ds/tree.js';
@@ -16,7 +17,7 @@ const SPEEDS = [1600, 1100, 750, 450, 220]; // ms per step
 
 const hex = (c) => `#${new THREE.Color(c).getHexString()}`;
 
-export function mountStructures(root) {
+export function mountStructures(root, initialTab) {
   root.innerHTML = html`
     <div class="viewport" data-viewport></div>
     <aside class="panel">
@@ -93,7 +94,16 @@ export function mountStructures(root) {
     setStats(markup) {
       $('[data-stats]').innerHTML = markup;
     },
+    /** Set by a tab: called with a node's id when that node is clicked in the 3D view. */
+    onNodeClick: null,
   };
+
+  // Clicking a node in the scene hands it to the current tab (search it, inspect it, start from it…).
+  const stopInteract = interact(stage, {
+    pick: () => (ctx.onNodeClick ? renderer.meshes() : []),
+    onClick: (hit) => ctx.onNodeClick?.(hit.object.userData.nodeId),
+    cursor: 'pointer',
+  });
 
   function selectTab(key) {
     cleanup?.();
@@ -109,11 +119,15 @@ export function mountStructures(root) {
     $('[data-msg]').textContent = 'Pick an operation above.';
     ctx.controls.innerHTML = '';
     ctx.setStats('');
+    ctx.onNodeClick = null;
     current = TABS.find((t) => t.key === key);
     renderer.setViewDirection(...current.view);
     $('[data-intro]').innerHTML = current.intro;
     root.querySelectorAll('[data-tab]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.tab === key)));
     cleanup = current.mount(ctx);
+    // Keep the URL in sync without triggering a full re-route, then let the shell refresh breadcrumbs and the coach.
+    history.replaceState(null, '', `#/structures/${key}`);
+    window.dispatchEvent(new Event('concept-change'));
   }
 
   root.querySelectorAll('[data-tab]').forEach((b) => b.addEventListener('click', () => selectTab(b.dataset.tab)));
@@ -145,9 +159,10 @@ export function mountStructures(root) {
     }
   });
 
-  selectTab(TABS[0].key);
+  selectTab(TABS.some((t) => t.key === initialTab) ? initialTab : TABS[0].key);
   return () => {
     cleanup?.();
+    stopInteract();
     stage.dispose();
   };
 }

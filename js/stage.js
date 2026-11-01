@@ -22,7 +22,7 @@ export function createStage(container, { cameraPosition = [4, 3.5, 5], axisLengt
   container.appendChild(labelRenderer.domElement);
 
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x0f1320);
+  scene.background = new THREE.Color(0x070a1a);
 
   const perspective = new THREE.PerspectiveCamera(50, 1, 0.05, 200);
   perspective.position.set(...cameraPosition);
@@ -38,7 +38,7 @@ export function createStage(container, { cameraPosition = [4, 3.5, 5], axisLengt
   sun.position.set(5, 8, 6);
   scene.add(sun);
 
-  if (grid) scene.add(new THREE.GridHelper(10, 20, 0x2a3350, 0x1c2338));
+  if (grid) scene.add(new THREE.GridHelper(10, 20, 0x2a2f55, 0x161a36));
   if (axes) scene.add(createAxes(axisLength));
 
   function resize() {
@@ -96,6 +96,8 @@ export function createStage(container, { cameraPosition = [4, 3.5, 5], axisLengt
   return {
     scene,
     controls,
+    container,
+    canvas: renderer.domElement,
     get camera() { return camera; },
     setProjection,
     setFov(fov) {
@@ -145,6 +147,27 @@ export function makeLabel(text, position, color = 0xffffff, className = 'axis-la
   const label = new CSS2DObject(el);
   label.position.copy(position);
   return label;
+}
+
+/**
+ * Empty a group: dispose GPU resources and remove HTML labels. three.js only removes a label's element when the
+ * label itself is removed, not when an ancestor group is, so nested labels would otherwise linger on screen.
+ */
+export function clearGroup(group) {
+  group.traverse((o) => {
+    o.geometry?.dispose();
+    o.material?.dispose();
+    if (o.isCSS2DObject) o.element.remove();
+  });
+  group.clear();
+}
+
+/** Show or hide an object together with any HTML labels inside it (labels ignore their parents' visibility). */
+export function setVisible(object, visible) {
+  object.visible = visible;
+  object.traverse((o) => {
+    if (o.isCSS2DObject) o.visible = visible;
+  });
 }
 
 // ArrowHelper breaks visually when its length is shorter than its head, so clamp the head

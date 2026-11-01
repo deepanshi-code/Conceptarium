@@ -3,6 +3,7 @@
 import * as THREE from 'three';
 import { createStage, COLORS } from '../stage.js';
 import { renderMatrix, html } from '../ui.js';
+import { interact, rayOnPlane, cameraPlane } from '../interact.js';
 
 const ORDERS = ['TRS', 'TSR', 'RTS', 'RST', 'STR', 'SRT'];
 const OP_NAMES = { T: 'Translate', R: 'Rotate', S: 'Scale' };
@@ -194,9 +195,36 @@ export function mountTransforms(root) {
       : 'The bottom row is (0, 0, 0, 1), so w stays 1 and nothing is divided by depth. Parallel lines stay parallel and size does not change with distance.';
   }
 
+  // Grab the object and drag it: the pointer's movement is added to the translation T. With order T·R·S the
+  // object follows the pointer exactly; with T applied earlier, the later R and S also act on the movement.
+  const stopInteract = interact(stage, {
+    pick: () => model.children.filter((c) => c.isMesh),
+    onDown: (hit) => {
+      const plane = cameraPlane(stage.camera, hit.point);
+      let last = hit.point.clone();
+      return {
+        move: (ray) => {
+          const p = rayOnPlane(ray, plane);
+          if (!p) return;
+          const delta = p.clone().sub(last);
+          last = p;
+          for (const [key, d] of [['tx', delta.x], ['ty', delta.y], ['tz', delta.z]]) {
+            params[key] = THREE.MathUtils.clamp(params[key] + d, -3, 3);
+            $(`[data-param="${key}"]`).value = params[key];
+            $(`[data-out="${key}"]`).textContent = params[key].toFixed(1);
+          }
+          update();
+        },
+      };
+    },
+  });
+
   update();
   updateProjection();
-  return () => stage.dispose();
+  return () => {
+    stopInteract();
+    stage.dispose();
+  };
 }
 
 function toRows(m4) {

@@ -73,6 +73,16 @@ export const bplusTab = {
       seedTree();
     });
 
+    // Click a node to inspect it: one node = one disk page.
+    ctx.onNodeClick = (id) => {
+      const find = (n) => (n.id === id ? n : n.children.map(find).find(Boolean) ?? null);
+      const node = find(tree.root);
+      if (!node) return;
+      ctx.say(node.leaf
+        ? `Leaf page holding keys [${node.keys.join(', ')}]. Leaves store the actual entries and link to the next leaf for range scans.`
+        : `Internal page with separators [${node.keys.join(', ')}] and ${node.children.length} child pointers: it only routes searches, it stores no entries itself.`);
+    };
+
     function renderStats() {
       const keys = bp.leaves(tree).flatMap((l) => l.keys).length;
       let nodes = 0;
