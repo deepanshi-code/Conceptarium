@@ -5,7 +5,7 @@
 import { CATALOG, SUBJECTS } from './catalog.js';
 import { buildSky } from './sky.js';
 
-const TRY = ['structures/tree', 'drawing', 'fourier', 'beam'];
+const TRY = ['sections', 'sorting', 'waves', 'structures/tree'];
 
 export function mountHome(root) {
   const tryChips = TRY.map((path) => CATALOG.find((c) => c.path === path)).filter(Boolean);
@@ -17,7 +17,7 @@ export function mountHome(root) {
         <p class="eyebrow blur-in" style="--d:0s"><span class="dot"></span>A planetarium for engineering concepts</p>
         <h1 class="blur-in" style="--d:0.1s">See the concepts you were told to <em>imagine</em></h1>
         <p class="script blur-in" style="--d:0.3s">from textbook diagrams to living 3D</p>
-        <p class="hero-sub blur-in" style="--d:0.45s">${CATALOG.length} interactive models across engineering drawing, mechanics, maths, ML and data structures. Drag them, change the numbers, watch what happens.</p>
+        <p class="hero-sub blur-in" style="--d:0.45s">${CATALOG.length} interactive 3D models. Drag them, change the numbers, see what happens.</p>
         <form class="search-bar blur-in" style="--d:0.6s" data-hero-search>
           <span class="search-icon" aria-hidden="true">⌕</span>
           <input type="search" placeholder="Search a concept: projection, AVL, Fourier…" aria-label="Search concepts" data-hero-input>
@@ -52,7 +52,7 @@ export function mountHome(root) {
           ${Object.entries(SUBJECTS).map(([key, s]) => `<button class="chip" data-subject="${key}" style="--c:${s.color}">${s.name}</button>`).join('')}
         </div>
       </div>
-      <div class="cards" data-cards></div>
+      <div data-cards></div>
       <p class="empty" data-empty hidden>No concept matches that search yet.</p>
     </section>
   `;
@@ -61,25 +61,37 @@ export function mountHome(root) {
   const state = { query: '', subject: '' };
 
   // --- Cards -------------------------------------------------------------
-  function renderCards() {
-    const q = state.query.trim().toLowerCase();
-    const list = CATALOG.filter((c) => (!state.subject || c.subject === state.subject)
-      && (!q || `${c.title} ${c.blurb} ${SUBJECTS[c.subject].name}`.toLowerCase().includes(q)));
-    $('[data-cards]').innerHTML = list.map((c, i) => {
-      const s = SUBJECTS[c.subject];
-      return `
-        <a class="card reveal" href="#/${c.path}" style="--c:${s.color}; --d:${(i % 4) * 0.08}s">
+  // With no search or filter, cards are grouped under a heading per subject; otherwise they form one grid.
+  const cardHtml = (c, i) => {
+    const s = SUBJECTS[c.subject];
+    return `
+        <a class="card reveal" href="#/${c.path}" style="--c:${s.color}; --d:${(i % 4) * 0.06}s">
           <div class="card-top">
             <span class="card-icon" aria-hidden="true">${c.icon}</span>
             <small>${s.name}</small>
           </div>
           <h2>${c.title}</h2>
-          <p>${c.blurb}</p>
+          <p>${c.idea ?? c.blurb}</p>
           <span class="go">Explore →</span>
         </a>`;
-    }).join('');
+  };
+  function renderCards() {
+    const q = state.query.trim().toLowerCase();
+    const list = CATALOG.filter((c) => (!state.subject || c.subject === state.subject)
+      && (!q || `${c.title} ${c.idea} ${c.blurb} ${c.real} ${SUBJECTS[c.subject].name}`.toLowerCase().includes(q)));
+    const grouped = !q && !state.subject;
+    $('[data-cards]').innerHTML = grouped
+      ? Object.entries(SUBJECTS).map(([key, s]) => {
+        const members = list.filter((c) => c.subject === key);
+        return `
+          <section class="subject-group" style="--c:${s.color}">
+            <h3 class="subject-head">${s.name} <span>${members.length}</span></h3>
+            <div class="cards">${members.map(cardHtml).join('')}</div>
+          </section>`;
+      }).join('')
+      : `<div class="cards">${list.map(cardHtml).join('')}</div>`;
     $('[data-empty]').hidden = list.length > 0;
-    root.querySelectorAll('.cards .reveal').forEach((el) => revealer.observe(el));
+    root.querySelectorAll('[data-cards] .reveal').forEach((el) => revealer.observe(el));
   }
 
   // Sections and cards blur-and-fade in the first time they scroll into view.
@@ -116,9 +128,8 @@ export function mountHome(root) {
     $(a.dataset.scroll).scrollIntoView({ behavior: 'smooth' });
   }));
 
-  // 3D tilt: each card leans towards the pointer (its layers sit at different depths in CSS),
-  // and a soft glow follows the cursor. One delegated listener covers cards re-rendered by search.
-  const MAX_TILT = 9; // degrees
+  // 3D tilt: each card leans gently towards the pointer, and a soft glow in the subject colour follows the cursor. One delegated listener covers cards re-rendered by search.
+  const MAX_TILT = 4; // degrees
   const cards = $('[data-cards]');
   cards.addEventListener('pointermove', (e) => {
     const card = e.target.closest('.card');
@@ -126,7 +137,7 @@ export function mountHome(root) {
     const r = card.getBoundingClientRect();
     const px = (e.clientX - r.left) / r.width;
     const py = (e.clientY - r.top) / r.height;
-    card.style.transform = `rotateY(${(px - 0.5) * 2 * MAX_TILT}deg) rotateX(${(0.5 - py) * 2 * MAX_TILT}deg) translateZ(6px)`;
+    card.style.transform = `perspective(900px) rotateY(${(px - 0.5) * 2 * MAX_TILT}deg) rotateX(${(0.5 - py) * 2 * MAX_TILT}deg) translateY(-2px)`;
     card.style.setProperty('--mx', `${px * 100}%`);
     card.style.setProperty('--my', `${py * 100}%`);
   });

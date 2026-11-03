@@ -14,7 +14,10 @@ export const COLORS = {
 
 export function createStage(container, { cameraPosition = [4, 3.5, 5], axisLength = 3.5, axes = true, grid = true } = {}) {
   const renderer = new THREE.WebGLRenderer({ antialias: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  // Start sharp; the frame loop steps the resolution down if this machine can't keep up (see below).
+  let pixelRatio = Math.min(window.devicePixelRatio, 1.75);
+  renderer.setPixelRatio(pixelRatio);
+  renderer.localClippingEnabled = true; // per-material clipping planes, used to cut solids open
   container.appendChild(renderer.domElement);
 
   const labelRenderer = new CSS2DRenderer();
@@ -31,6 +34,7 @@ export function createStage(container, { cameraPosition = [4, 3.5, 5], axisLengt
 
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
+  controls.dampingFactor = 0.08;
   controls.target.set(0, 0, 0);
 
   scene.add(new THREE.AmbientLight(0xffffff, 0.6));
@@ -83,10 +87,26 @@ export function createStage(container, { cameraPosition = [4, 3.5, 5], axisLengt
   observer.observe(container);
   resize();
 
+  // Skip rendering while the stage is scrolled out of view (the home page has two skies) or the tab is hidden.
+  let onScreen = true;
+  const visibility = new IntersectionObserver(([entry]) => { onScreen = entry.isIntersecting; });
+  visibility.observe(container);
+
   const frameCallbacks = [];
   const clock = new THREE.Clock();
+  let slowFrames = 0;
   renderer.setAnimationLoop(() => {
-    const dt = clock.getDelta();
+    // Clamp dt so a long pause (tab switch, GC hiccup) doesn't make animations jump.
+    const dt = Math.min(clock.getDelta(), 1 / 20);
+    if (!onScreen || document.hidden) return;
+    // Adaptive resolution: after ~1 s of frames slower than 40 fps, render fewer pixels.
+    slowFrames = dt > 1 / 40 ? slowFrames + 1 : Math.max(0, slowFrames - 2);
+    if (slowFrames > 60 && pixelRatio > 1) {
+      pixelRatio = Math.max(1, pixelRatio - 0.5);
+      renderer.setPixelRatio(pixelRatio);
+      resize();
+      slowFrames = 0;
+    }
     for (const fn of frameCallbacks) fn(dt);
     controls.update();
     renderer.render(scene, camera);
@@ -108,6 +128,7 @@ export function createStage(container, { cameraPosition = [4, 3.5, 5], axisLengt
     dispose() {
       renderer.setAnimationLoop(null);
       observer.disconnect();
+      visibility.disconnect();
       controls.dispose();
       scene.traverse((obj) => {
         obj.geometry?.dispose();

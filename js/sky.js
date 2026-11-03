@@ -54,7 +54,10 @@ export function buildSky(container, { mode = 'map', scrollEl = null } = {}) {
     : { cx: 0, cy: 0.6, colX: halfW * 0.47, rowGap: halfH * 0.5, spread: 0.6 };
   // Wide screens: an oval facing the camera. Phones: a 2 × 3 grid, which keeps labels apart in a narrow frame.
   const centerFor = (si, count) => {
-    if (!wide) return new THREE.Vector3((si % 2 ? 1 : -1) * map.colX, (1 - Math.floor(si / 2)) * map.rowGap, 0);
+    if (!wide) {
+      const rows = Math.ceil(count / 2);
+      return new THREE.Vector3((si % 2 ? 1 : -1) * map.colX, ((rows - 1) / 2 - Math.floor(si / 2)) * map.rowGap * (3 / Math.max(3, rows)), 0);
+    }
     const angle = Math.PI / 2 + (si / count) * Math.PI * 2;
     return new THREE.Vector3(Math.cos(angle) * map.rx, Math.sin(angle) * map.ry, (si % 2 ? -1 : 1) * 0.8);
   };

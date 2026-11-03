@@ -4,18 +4,30 @@
 
 Interactive 3D visualizations of engineering concepts that are hard to understand by imagination alone. Built for B.Tech and BCA students.
 
-The landing page has a northern-lights hero with a 3D planet horizon, a "concept sky" where each subject is a constellation of clickable stars, and a searchable catalog of 3D-tilting cards. Inside each concept you can drag and click the 3D objects directly. Every concept opens with a short "Start here" guide and has next/previous navigation.
+The landing page has a northern-lights hero with a 3D planet horizon, a "concept sky" where each subject is a constellation of clickable stars, and a searchable catalog of 3D-tilting cards. Inside each concept you can drag and click the 3D objects directly.
+
+Text is kept short on purpose. Each concept opens with a one-line idea and where you meet it in real life; the longer explanation is folded under "Explain more", and a one-line "Try 1/3" strip suggests what to do next.
 
 | Visualization | Subject | What you can do |
 |---|---|---|
 | **Orthographic Projection** | Engineering Drawing | Place an object in the glass box. Front, top and side views are computed from its edges (feature + silhouette), with hidden lines found by ray-casting. Then unfold the planes into a 1st-angle or 3rd-angle drawing sheet, or switch to a true isometric view. |
 | **Development of Surfaces** | Engineering Drawing | Unfold prisms, cylinders, pyramids and cones into their flat sheet-metal patterns. Faces are hinged in a chain, and the fold direction is chosen numerically so the solid closes. Shows the sector angle θ = 360°·r/L and true lengths. |
+| **Sections of Solids** | Engineering Drawing | Drag a cutting plane through a cone, cylinder, pyramid or hex prism. The cut face is hatched, the top piece lifts off, and the true shape is drawn face-on. Cone shortcuts walk through circle, ellipse, parabola and hyperbola. |
 | **Beams: SFD, BMD & Deflection** | Mechanics | Simply supported or cantilever beams with point loads and UDLs. The beam bends (exaggerated), with the shear force and bending moment diagrams standing behind it and a marker where V = 0 and M peaks. |
 | **Fourier Series** | Mathematics | Epicycles with time running into the screen: each term traces a helix, and the wave is the helix's shadow on a wall. Square, sawtooth and triangle waves, with the Gibbs overshoot visible. |
 | **Matrix & Eigenvectors** | Engineering Mathematics (Linear Algebra) | Edit a 3×3 matrix, watch space deform from I → A, and see eigenvectors stay on their span. Shows determinant as volume, defective matrices, and complex eigenvalues. |
 | **3D Transformations** | Computer Graphics | Build the 4×4 model matrix from T, R, S, change the multiplication order, step through each operation, and compare perspective and orthographic projection matrices. |
 | **Gradient Descent** | Machine Learning (Optimization) | Race gradient descent, Momentum and Adam on four loss surfaces: a convex bowl, an ill-conditioned valley, a saddle point and Himmelblau's four minima. Tune the learning rate (see the lr < 2/L stability limit), click to choose a start point, and compare 3D and contour views. |
 | **Data Structures** | Data Structures & Algorithms | Six tabs, each animated step by step with an explanation per step. **Linked list vs array** on a floor that represents memory addresses (contiguous vs scattered; singly, doubly and circular). **BST/AVL** with animated LL/RR/LR/RL rotations, balance factors, subtree-height bars, and a plain BST behind for comparison. **Heap** shown as tree and array at once. **B+ tree** with leaf and internal splits, search, and range scans along the leaf chain. **Graphs**: BFS, DFS and Dijkstra, where nodes rise to their distance from the start and the queue / stack / priority queue appears as a live row. **Hashing**: separate chaining (chains as towers), linear and quadratic probing (probe arcs, tombstones), and resize & rehash, with measured vs theoretical probe counts. |
+| **Sorting Race** | Data Structures & Algorithms | Bubble, insertion, selection, merge and quick sort race on the same bars, one step per tick, with a scoreboard. Try nearly-sorted input: insertion sort wins. |
+| **CPU Scheduling** | Operating Systems | FCFS, SJF, SRTF, Round Robin and Priority as a 3D Gantt chart. Waiting time is drawn as red glass blocks, and a table compares every scheduler on the same (editable) processes. |
+| **Electric Field & Potential** | Physics | Potential is height: + charges are hills, − charges are wells. Drag charges, watch field lines run downhill, and drop a test charge to see it roll along one. |
+| **Wave Interference** | Physics | Two sources on water make loud and calm stripes. Drag the sources and a probe; the panel shows the path difference in wavelengths. |
+| **Projectile Motion** | Physics | Aim a cannon by dragging its barrel, try to hit a draggable target, and compare arcs on Earth, the Moon, Mars and Jupiter. Live arrows show vₓ staying constant while v_y shrinks, flips and grows. Optional cliff height and air drag. |
+| **Logic Gates & Adders** | Digital Electronics | Click input switches; wires carrying a 1 glow and send pulses to the next gate. AND, OR, NOT, NAND, NOR, XOR, a half adder and a full adder, each with a clickable truth table. |
+| **Tower of Hanoi & Recursion** | Data Structures & Algorithms | Solve it yourself by clicking pegs (illegal moves are explained), or watch the recursive solution with its live call stack. |
+| **Stack & Queue** | Data Structures & Algorithms | Push plates into a tube (LIFO) or roll boxes along a conveyor (FIFO); click a middle item to see why it can't leave. A third mode checks balanced brackets with a stack. |
+| **Packet Journey** | Computer Networks | A message goes laptop → router → server. Headers join the front on the way down (encapsulation); the router opens it only to the IP header; the receiver unwraps it. TCP/IP or OSI 7. |
 
 ## Run locally
 
@@ -29,7 +41,7 @@ Then open http://localhost:5173. `serve.py` is Python's built-in server plus "do
 
 ## Tests
 
-The eigen-solver (`js/linalg.js`), the optimizers (`js/optim.js`), the data structures (`js/ds/*.js`), the beam solver (`js/mech/beam.js`) and the Fourier series (`js/maths/fourier.js`) have no dependencies and are unit-tested with Node's built-in test runner:
+The eigen-solver (`js/linalg.js`), the optimizers (`js/optim.js`), the data structures (`js/ds/*.js`), the beam solver (`js/mech/beam.js`), the Fourier series (`js/maths/fourier.js`), the sorts, the CPU schedulers and the field solver have no dependencies and are unit-tested with Node's built-in test runner:
 
 ```bash
 npm test
@@ -49,7 +61,17 @@ serve.py            dev server with no-cache headers
 js/coach.js         "Start here" onboarding card
 js/mech/beam.js     reactions, V(x), M(x), deflection by double integration
 js/maths/fourier.js Fourier coefficients and partial sums
-js/views/drawing.js, development.js, beam.js, fourier.js
+js/views/drawing.js, development.js, sections.js, beam.js, fourier.js
+js/views/sorting.js, scheduling.js, efield.js, waves.js
+js/views/projectile.js, logic.js, hanoi.js, stackqueue.js, network.js
+js/phys/projectile.js  trajectory with optional v² drag (RK2)
+js/digital/logic.js    gates, half/full adder, truth tables
+js/algo/hanoi.js       moves with the recursion call stack
+js/net/packet.js       encapsulation steps through sender, router, receiver
+js/ds/brackets.js      balanced-bracket check with a stack
+js/algo/sort.js     sorting algorithms that record every step
+js/os/schedule.js   FCFS / SJF / SRTF / Round Robin / Priority
+js/phys/field.js    potential, field and field-line tracing for point charges
 js/stage.js         shared renderer, cameras, orbit controls, axes, labels
 js/linalg.js        3x3 determinant, cubic solver, eigenvalues/eigenspaces
 js/optim.js         loss surfaces (analytic gradients) + GD / Momentum / Adam
@@ -70,6 +92,8 @@ tests/*.test.mjs
 - **Direct interaction** (`js/interact.js`): pressing on a pickable object takes the gesture from the orbit camera (capture-phase listener), so you drag loads, vector tips and planes and click nodes, while empty space still orbits.
 - **Hidden lines are computed, not hand-drawn.** For each view, the edges drawn are sharp feature edges plus silhouette edges (where the faces on either side point towards and away from the viewer). Each edge is sampled, and a ray towards the observer decides whether each piece is visible or hidden.
 - **Beam results are tested against textbook formulas** (PL/4, PL³/48EI, wL²/8, 5wL⁴/384EI, PL³/3EI, wL⁴/8EI).
+- **Smooth on modest laptops:** a stage stops rendering when it is scrolled off-screen or the tab is hidden, frame time is clamped after pauses, and the resolution steps down if the frame rate stays under 40 fps.
+- **CPU scheduling results are tested against textbook examples** (FCFS convoy average wait 17, SJF 3, SRTF 6.5, Round Robin q = 4).
 - **Plain ES modules and Three.js from a CDN, with no bundler.** It's easy to read, and it deploys to GitHub Pages as-is.
 - **The eigen animation is (1 − t)·I + t·A.** Eigenvectors of A stay eigenvectors of every blend, so they stay on their line for the whole animation. Trade-off: for rotations, the blend shrinks the shape mid-way. The UI says so.
 - **Eigenvalues come from the characteristic cubic** (closed form), and eigenvectors from the null space of A − λI via cross products. Repeated eigenvalues are classified by eigenspace dimension (line, plane or all of space).
@@ -78,9 +102,13 @@ tests/*.test.mjs
 
 ## Roadmap
 
-- [ ] Engineering Drawing: sections of solids (cutting plane + hatching), projections of points and lines
-- [ ] CS: CPU scheduling, sorting algorithms, OSI layers / packet routing
-- [ ] More concepts: EM field lines
+- [x] Engineering Drawing: sections of solids (cutting plane + hatching)
+- [ ] Engineering Drawing: projections of points and lines
+- [x] CS: CPU scheduling, sorting algorithms
+- [x] CS: OSI layers / packet routing, logic gates, stack & queue, recursion
+- [x] Physics: electric field lines, wave interference
+- [x] Physics: projectile motion
+- [ ] Physics: magnetic fields
 - [ ] Graphs: directed graphs, topological sort, MST (Prim/Kruskal)
 - [ ] B+ tree deletion (borrow/merge)
 - [ ] Guided "challenge" mode (e.g. "find a matrix with det = 0 that isn't the zero matrix")

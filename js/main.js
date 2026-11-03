@@ -7,6 +7,16 @@ import { mountDrawing } from './views/drawing.js';
 import { mountDevelopment } from './views/development.js';
 import { mountBeam } from './views/beam.js';
 import { mountFourier } from './views/fourier.js';
+import { mountSections } from './views/sections.js';
+import { mountSorting } from './views/sorting.js';
+import { mountScheduling } from './views/scheduling.js';
+import { mountEfield } from './views/efield.js';
+import { mountWaves } from './views/waves.js';
+import { mountProjectile } from './views/projectile.js';
+import { mountLogic } from './views/logic.js';
+import { mountHanoi } from './views/hanoi.js';
+import { mountStackQueue } from './views/stackqueue.js';
+import { mountNetwork } from './views/network.js';
 import { mountHome } from './home.js';
 import { showCoach } from './coach.js';
 import { CATALOG, SUBJECTS, findByPath } from './catalog.js';
@@ -20,6 +30,16 @@ const VIEWS = {
   development: mountDevelopment,
   beam: mountBeam,
   fourier: mountFourier,
+  sections: mountSections,
+  sorting: mountSorting,
+  scheduling: mountScheduling,
+  efield: mountEfield,
+  waves: mountWaves,
+  projectile: mountProjectile,
+  logic: mountLogic,
+  hanoi: mountHanoi,
+  stackqueue: mountStackQueue,
+  network: mountNetwork,
 };
 
 const app = document.getElementById('app');
@@ -64,7 +84,34 @@ function refreshChrome() {
   next.innerHTML = `Next: ${after.title} →`;
   const viewport = app.querySelector('.viewport');
   if (viewport) showCoach(viewport, concept);
+  simplifyPanel(app.querySelector('.panel'), concept);
 }
+
+// Keep the side panel light: the one-line idea and a real-world use come first, and the longer
+// explanation is folded under "Explain more". Runs again on data-structure tab changes, so it is idempotent.
+function simplifyPanel(panel, concept) {
+  if (!panel || !concept.idea) return;
+  let idea = panel.querySelector('.big-idea');
+  if (!idea) {
+    idea = document.createElement('div');
+    idea.className = 'big-idea';
+    const lede = panel.querySelector('.lede');
+    if (lede) {
+      lede.before(idea);
+      const more = document.createElement('details');
+      more.className = 'more';
+      more.innerHTML = '<summary>Explain more</summary>';
+      lede.replaceWith(more);
+      more.append(lede);
+    } else {
+      panel.querySelector('h2').after(idea);
+    }
+  }
+  idea.innerHTML = `<p>${concept.idea}</p><small><span aria-hidden="true">🌍</span> Used in: ${concept.real}</small>`;
+}
+
+// Long hints are clamped to two lines in CSS; a click shows the rest.
+app.addEventListener('click', (e) => e.target.closest('.panel .hint')?.classList.toggle('open'));
 
 window.addEventListener('hashchange', render);
 window.addEventListener('concept-change', refreshChrome);
