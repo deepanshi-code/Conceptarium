@@ -764,3 +764,35 @@ kbd { font: 600 10px/1 var(--font-mono); padding: 3px 5px; border-radius: 5px; b
 .organelle-card p { margin: 0 0 6px; line-height: 1.5; }
 .organelle-card .like { color: var(--muted); }
 .organelle-card small { color: var(--muted); }
+
+/* --- More biology / chemistry ------------------------------------------- */
+.route-list { margin: 0; padding-left: 22px; font-size: 13px; line-height: 1.7; }
+.route-list li { cursor: pointer; padding: 0 6px; border-radius: 6px; }
+.route-list li.low, .route-list li.gain { color: #93c5fd; }
+.route-list li.high, .route-list li.lose { color: #fca5a5; }
+.route-list li.current { background: var(--surface-2); color: var(--text); }
+.timing .thresh { stroke: var(--danger); stroke-dasharray: 4 3; }
+.legend-row { display: flex; align-items: center; gap: 6px; margin-top: 10px; color: var(--muted); font-size: 12px; }
+.cat-legend { display: flex; flex-wrap: wrap; gap: 6px 12px; margin: 8px 0; font-size: 12px; color: var(--muted); }
+.en-scale { margin-top: 12px; }
+.en-scale small { display: block; margin-top: 4px; color: var(--muted); font: 500 10px var(--font-mono); }
+.en-bar { position: relative; display: grid; grid-template-columns: 12% 40% 48%; height: 26px; border-radius: 8px; overflow: hidden; font: 600 10px/26px var(--font-mono); text-transform: uppercase; text-align: center; }
+.en-bar .np { background: rgba(96, 165, 250, 0.25); }
+.en-bar .pol { background: rgba(94, 234, 212, 0.25); }
+.en-bar .ion { background: rgba(255, 107, 139, 0.25); }
+.en-bar i { position: absolute; top: 0; bottom: 0; width: 3px; background: #facc15; box-shadow: 0 0 8px #facc15; }
+.voltmeter { margin: 12px 0; padding: 10px; border-radius: 12px; text-align: center; background: #0b1020; border: 1px solid rgba(74, 222, 128, 0.3); font: 600 14px var(--font-mono); color: var(--muted); }
+.voltmeter span { font-size: 30px; color: #4ade80; }
+
+/* --- Round 5: rates, pH, photosynthesis, breathing ----------------------- */
+.rate-bar { height: 14px; border-radius: 999px; background: rgba(255, 255, 255, 0.06); overflow: hidden; margin-bottom: 10px; }
+.rate-bar span { display: block; height: 100%; background: linear-gradient(90deg, #22c55e, #facc15); transition: width 0.3s; }
+.stroke-strip.two { grid-template-columns: repeat(2, 1fr); }
+.compare { margin-top: 14px; }
+.compare td:first-child { color: var(--muted); }
+.ph-meter { margin: 12px 0 6px; padding: 10px; border-radius: 12px; text-align: center; background: #0b1020; border: 1px solid var(--border-strong); font: 600 14px var(--font-mono); color: var(--muted); }
+.ph-meter span { font-size: 30px; color: var(--text); margin: 0 6px; }
+.ph-meter em { font-style: normal; color: var(--accent); }
+.ph-scale { position: relative; height: 14px; margin: 4px 0 12px; border-radius: 999px; background: linear-gradient(90deg, #dc2626, #f97316 21%, #facc15 36%, #22c55e 50%, #0ea5e9 64%, #4338ca 79%, #7e22ce); }
+.ph-scale i { position: absolute; top: -4px; width: 4px; height: 22px; margin-left: -2px; border-radius: 2px; background: #fff; box-shadow: 0 0 6px #fff; transition: left 0.3s; }
+.timing .tlabel.q { fill: #4ade80; }

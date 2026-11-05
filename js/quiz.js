@@ -144,6 +144,62 @@ const Q = {
     ['Which organelle releases energy as ATP?', ['Golgi apparatus', 'Mitochondrion', 'Nucleus'], 1, 'Mitochondria carry out aerobic respiration.'],
     ['Which of these is found in plant cells but not animal cells?', ['Ribosome', 'Chloroplast', 'Mitochondrion'], 1, 'Chloroplasts (and the cell wall) are plant-only. Both have mitochondria and ribosomes.'],
   ],
+  periodic: [
+    ['Going down a group, the atomic radius…', ['Increases', 'Decreases', 'Stays the same'], 0, 'Each period down adds a new electron shell.'],
+    ['Which element is the most electronegative?', ['Oxygen', 'Chlorine', 'Fluorine'], 2, 'Fluorine (3.98): small, with a nearly full shell, it pulls electrons hardest.'],
+  ],
+  bonding: [
+    ['In NaCl, what happens to sodium’s outer electron?', ['It is shared with Cl', 'It moves to Cl', 'It is lost to the air'], 1, 'Na⁺ and Cl⁻ form, held by opposite charges: an ionic bond.'],
+    ['In HCl, the shared electrons sit closer to…', ['H', 'Cl', 'Exactly in the middle'], 1, 'Cl is more electronegative (3.16 vs 2.20), so it is δ−.'],
+  ],
+  gaslaws: [
+    ['At constant temperature, halving a gas’s volume makes its pressure…', ['Halve', 'Double', 'Stay the same'], 1, 'Boyle’s law: P × V stays constant.'],
+    ['In gas laws, temperature must be in…', ['°C', 'Kelvin', 'Either'], 1, 'V ∝ T only works from absolute zero, so use kelvin (°C + 273).'],
+  ],
+  galvanic: [
+    ['In a Daniell cell, which electrode dissolves?', ['Zinc (anode)', 'Copper (cathode)', 'Neither'], 0, 'Zn has the lower E° (−0.76 V), so it is oxidised: Zn → Zn²⁺ + 2e⁻.'],
+    ['Standard EMF of the Daniell cell (E°Cu = +0.34 V, E°Zn = −0.76 V)?', ['0.42 V', '1.10 V', '−1.10 V'], 1, 'E°cell = E°cathode − E°anode = 0.34 − (−0.76) = 1.10 V.'],
+  ],
+  heart: [
+    ['Which chamber pumps blood to the whole body?', ['Right ventricle', 'Left ventricle', 'Left atrium'], 1, 'That is why it has the thickest muscle wall.'],
+    ['The pulmonary artery carries…', ['Oxygen-rich blood to the body', 'Oxygen-poor blood to the lungs', 'Oxygen-rich blood to the heart'], 1, 'It is the one artery with deoxygenated blood.'],
+  ],
+  mitosis: [
+    ['In which stage do chromosomes line up across the middle of the cell?', ['Prophase', 'Metaphase', 'Anaphase'], 1, 'Metaphase: the “middle” stage, on the metaphase plate.'],
+    ['A cell with 46 chromosomes divides by mitosis. Each daughter cell has…', ['23', '46', '92'], 1, 'Mitosis keeps the number the same. Meiosis halves it.'],
+  ],
+  replication: [
+    ['DNA replication is called semi-conservative because each new molecule has…', ['Two new strands', 'One old and one new strand', 'Two old strands'], 1, 'Each old strand is kept and acts as the template for a new partner.'],
+    ['Which enzyme unzips the double helix?', ['Ligase', 'Helicase', 'Polymerase'], 1, 'Helicase opens the fork; polymerase builds; ligase seals the fragments.'],
+  ],
+  neuron: [
+    ['What rushes into the neuron during depolarisation?', ['K⁺ ions', 'Na⁺ ions', 'Cl⁻ ions'], 1, 'Na⁺ channels open first; K⁺ flows out afterwards to repolarise.'],
+    ['Why does myelin make nerve signals faster?', ['It adds more sodium', 'The signal jumps between gaps (nodes)', 'It makes the axon longer'], 1, 'Saltatory conduction: the impulse only regenerates at the nodes of Ranvier.'],
+  ],
+  photosynthesis: [
+    ['Which gas do plants give out during photosynthesis?', ['Carbon dioxide', 'Oxygen', 'Nitrogen'], 1, '6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂.'],
+    ['In bright light with low CO₂, what limits the rate?', ['Light', 'Carbon dioxide', 'Water'], 1, 'The scarcest factor limits the rate: adding light no longer helps.'],
+  ],
+  breathing: [
+    ['When you breathe in, the diaphragm…', ['Relaxes and domes up', 'Contracts and flattens', 'Does not move'], 1, 'Flattening makes the chest bigger, so pressure drops and air flows in.'],
+    ['Where does gas exchange happen in the lungs?', ['Trachea', 'Bronchi', 'Alveoli'], 2, 'Alveoli have thin walls and a huge surface area, wrapped in capillaries.'],
+  ],
+  meiosis: [
+    ['A human cell with 46 chromosomes makes sperm by meiosis. Each sperm has…', ['46', '23', '92'], 1, 'Meiosis halves the number, so egg (23) + sperm (23) = 46.'],
+    ['What makes the four cells from meiosis genetically different?', ['Mutation only', 'Crossing over and independent assortment', 'They are identical'], 1, 'Pairs swap pieces in prophase I, and line up randomly in metaphase I.'],
+  ],
+  enzymes: [
+    ['What happens to an enzyme at a very high temperature?', ['It works faster forever', 'Its active site changes shape (denatures)', 'It turns into substrate'], 1, 'The substrate no longer fits, and the change is permanent.'],
+    ['Pepsin works best in the stomach. Its optimum pH is about…', ['2', '7', '11'], 0, 'The stomach is strongly acidic; trypsin in the intestine prefers about pH 8.'],
+  ],
+  rates: [
+    ['A catalyst speeds up a reaction by…', ['Raising the temperature', 'Lowering the activation energy', 'Adding more reactant'], 1, 'It offers an easier route, and is not used up.'],
+    ['Why does heating speed up most reactions?', ['Particles get bigger', 'More collisions have energy ≥ Ea', 'Ea goes up'], 1, 'Faster particles collide more often and much more of them are energetic enough.'],
+  ],
+  acidbase: [
+    ['A solution has pH 3. Compared with pH 5, its [H⁺] is…', ['2 times higher', '100 times higher', '2 times lower'], 1, 'Each pH step is ×10, so 2 steps = ×100.'],
+    ['0.1 M acetic acid has a higher pH than 0.1 M HCl because acetic acid is…', ['More concentrated', 'A weak acid (only partly ionised)', 'A base'], 1, 'Fewer molecules release H⁺, so [H⁺] is lower and the pH higher (about 2.9 vs 1).'],
+  ],
 };
 
 export const hasQuiz = (path) => Boolean(Q[path]);

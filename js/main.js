@@ -29,6 +29,20 @@ import { mountGears } from './views/gears.js';
 import { mountEngine } from './views/engine.js';
 import { mountDna } from './views/dna.js';
 import { mountCell } from './views/cell.js';
+import { mountHeart } from './views/heart.js';
+import { mountMitosis } from './views/mitosis.js';
+import { mountReplication } from './views/replication.js';
+import { mountNeuron } from './views/neuron.js';
+import { mountPeriodic } from './views/periodic.js';
+import { mountBonding } from './views/bonding.js';
+import { mountGasLaws } from './views/gaslaws.js';
+import { mountGalvanic } from './views/galvanic.js';
+import { mountPhotosynthesis } from './views/photosynthesis.js';
+import { mountBreathing } from './views/breathing.js';
+import { mountMeiosis } from './views/meiosis.js';
+import { mountEnzymes } from './views/enzymes.js';
+import { mountRates } from './views/rates.js';
+import { mountAcidBase } from './views/acidbase.js';
 import { mountHome } from './home.js';
 import { showCoach } from './coach.js';
 import { attachToolbar, toggleFullscreen } from './toolbar.js';
@@ -69,6 +83,20 @@ const VIEWS = {
   engine: mountEngine,
   dna: mountDna,
   cell: mountCell,
+  heart: mountHeart,
+  mitosis: mountMitosis,
+  replication: mountReplication,
+  neuron: mountNeuron,
+  periodic: mountPeriodic,
+  bonding: mountBonding,
+  gaslaws: mountGasLaws,
+  galvanic: mountGalvanic,
+  photosynthesis: mountPhotosynthesis,
+  breathing: mountBreathing,
+  meiosis: mountMeiosis,
+  enzymes: mountEnzymes,
+  rates: mountRates,
+  acidbase: mountAcidBase,
 };
 
 const app = document.getElementById('app');

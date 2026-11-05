@@ -42,6 +42,20 @@ Text is kept short on purpose. Each concept opens with a one-line idea and where
 | **Crystal Lattices** | Chemistry | SC, BCC and FCC unit cells; cut atoms to the cell to see the ⅛ and ½ shares, count neighbours, compare packing (52 / 68 / 74%). |
 | **DNA to Protein** | Biology | Double helix with A–T / G–C pairs, transcription to mRNA, a ribosome translating codons, and random point mutations labelled silent, missense or nonsense. |
 | **Inside a Cell** | Biology | Animal and plant cells in 3D with clickable organelles (job + everyday comparison), a cut-away view and a "find the organelle" game. |
+| **Periodic Trends** | Chemistry | A 3D periodic table (H to Kr) with bar height = covalent radius, electronegativity or ionisation energy; click for values, colour by family. |
+| **Chemical Bonding** | Chemistry | Electron transfer (NaCl, MgO, KF) and sharing (H₂, Cl₂, O₂, N₂, HCl, HF, CO) with ΔEN on a non-polar / polar / ionic scale and δ+ / δ− labels. |
+| **Gas Laws** | Chemistry | Particles in a piston box; hold T, P or V to see Boyle's, Charles's and Gay-Lussac's laws, with a live P–V isotherm. |
+| **Galvanic Cell** | Chemistry | Any two of Mg, Zn, Fe, Ni, Pb, Cu, Ag: anode and cathode, electron flow, salt-bridge ions, E°cell and the Nernst equation. |
+| **Heart & Blood Flow** | Biology | Double circulation with blood cells that turn red in the lungs and blue in the body, beating chambers, valves, and "follow one blood cell". |
+| **Mitosis** | Biology | A scrubbable timeline through all six stages with chromosomes, spindle, nuclear envelope and counts per cell. |
+| **DNA Replication** | Biology | Helicase opens the fork; leading strand continuous, lagging strand in Okazaki fragments; ends with two half-old, half-new molecules. |
+| **Nerve Impulse** | Biology | An action potential travels down an axon (saltatory with myelin), Na⁺ in / K⁺ out, all-or-none threshold, live membrane-potential graph. |
+| **Photosynthesis** | Biology | A leaf with CO₂ in, O₂ out and glucose building up; light, CO₂ and temperature sliders, the limiting factor, and rate vs light. |
+| **Breathing & Gas Exchange** | Biology | Diaphragm, ribs and lungs breathing in time with pressure and air flow, plus an alveolus where O₂ and CO₂ diffuse. |
+| **Meiosis** | Biology | Crossing over, homologs splitting in meiosis I, sisters in meiosis II: one 2n = 4 cell becomes four n = 2 cells, with a mitosis comparison. |
+| **Enzymes** | Biology | Amylase, pepsin and trypsin turning substrate into products; rate against substrate (Michaelis–Menten), temperature and pH, with denaturing. |
+| **Reaction Rates** | Chemistry | Colliding particles that react above Ea, a Maxwell–Boltzmann curve with the reacting share shaded, an energy profile, and a catalyst. |
+| **Acids, Bases & pH** | Chemistry | Strong vs weak acids and bases with universal-indicator colours and a pH meter, plus an HCl–NaOH titration with phenolphthalein and the live curve. |
 
 ## Run locally
 
@@ -93,6 +107,10 @@ js/toolbar.js          reset view, fullscreen, screenshot
 js/chem/orbitals.js, vsepr.js, crystal.js   electron configuration, VSEPR geometry, unit cells
 js/mech/gears.js, slidercrank.js            gear trains, piston kinematics, four-stroke timing
 js/bio/dna.js                               genetic code, transcription, translation, mutations
+js/chem/periodic.js, bonding.js, gas.js, electrochem.js   element data, bond types, PV = nRT, cell EMF
+js/bio/heart.js, cellcycle.js, replication.js, neuron.js  circulation route, mitosis stages, replication, action potential
+js/bio/processes.js        photosynthesis, breathing, meiosis and enzyme models
+js/chem/kinetics.js, acidbase.js   Arrhenius / Maxwell–Boltzmann, pH and titration
 js/views/orbitals.js, vsepr.js, crystal.js, gears.js, engine.js, dna.js, cell.js
 js/ds/brackets.js      balanced-bracket check with a stack
 js/algo/sort.js     sorting algorithms that record every step
