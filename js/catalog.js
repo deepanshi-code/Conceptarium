@@ -192,11 +192,18 @@ export const CATALOG = [
     steps: ['<b>Drag the yellow mass</b> down and let go.', 'Change the <b>mass</b> and <b>stiffness</b>: watch the period.', 'Switch to <b>Pendulum</b>, set 70°, and see it fall behind the ideal sine.'],
   },
   {
-    path: 'logic', subject: 'digital', icon: '💡', title: 'Logic Gates & Adders',
-    idea: 'Gates turn 0s and 1s into new 0s and 1s. Wire them up and they can add.',
+    path: 'logic', subject: 'digital', icon: '💡', title: 'Logic Gates & Circuits',
+    idea: 'Gates turn 0s and 1s into new 0s and 1s. Wire them up and they add, subtract, multiply and route data.',
     real: 'Every CPU, calculator and phone chip',
-    blurb: 'Flip input switches and watch signals flow through AND, OR, XOR, NAND gates and a full adder.',
-    steps: ['<b>Click the input switches</b> to flip them between 0 and 1.', 'Watch the glowing pulses travel along the wires that carry a 1.', 'Open the <b>Full adder</b> and set A = B = Cin = 1: 1 + 1 + 1 = 11 in binary.'],
+    blurb: 'Gates (AND to XNOR), adders, subtractors, a 2-bit multiplier, comparator, MUX, DEMUX, decoder and priority encoder, with live signal flow.',
+    steps: ['<b>Click the input switches</b> to flip them between 0 and 1.', 'Pick <b>Arithmetic → Full sub</b> and try 0 − 1 − 1.', 'Pick <b>Data routing → 4:1 MUX</b> and change S1 S0: watch which input reaches Y.'],
+  },
+  {
+    path: 'sequential', subject: 'digital', icon: '⏱️', title: 'Flip-Flops, Registers & Counters',
+    idea: 'A flip-flop remembers one bit and changes only when the clock ticks.',
+    real: 'CPU registers, RAM, digital clocks, keyboards (shift registers)',
+    blurb: 'D, T, JK and SR flip-flops, a 4-bit register, shift register and up/down counter, with a clock button and a live timing diagram.',
+    steps: ['Flip <b>D</b>, then press <b>Clock pulse</b>: Q only changes on the clock.', 'Open <b>JK FF</b>, set J = K = 1 and clock a few times: it toggles.', 'Open <b>Counter</b> and press <b>Auto clock</b>: watch Q0 toggle every tick in the timing diagram.'],
   },
   {
     path: 'network', subject: 'net', icon: '📨', title: 'Packet Journey',

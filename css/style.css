@@ -710,3 +710,21 @@ kbd { font: 600 10px/1 var(--font-mono); padding: 3px 5px; border-radius: 5px; b
 .box-label { font: 700 15px/1 var(--font-mono); color: #fff; text-shadow: 0 1px 3px #000; pointer-events: none; }
 .box-label.small { font-size: 10px; }
 .idx-label { font: 500 10px/1 var(--font-mono); pointer-events: none; white-space: nowrap; }
+
+/* --- Logic circuits ------------------------------------------------------- */
+.circuit-name { margin: 6px 0 0; font: 600 15px/1.3 Inter, sans-serif; text-transform: none; letter-spacing: 0; color: var(--text); }
+.truth-wrap { max-height: 280px; overflow-y: auto; border: 1px solid var(--border); border-radius: 10px; }
+.truth-wrap .truth thead th { position: sticky; top: 0; background: var(--surface-solid); }
+
+/* --- Sequential circuits -------------------------------------------------- */
+.gate-label.light { color: #fff; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6); }
+.reset-q { margin-top: 8px; }
+.timing { padding: 8px; border: 1px solid var(--border); border-radius: 10px; background: rgba(255, 255, 255, 0.02); }
+.timing svg { display: block; }
+.timing .tlabel { font: 600 10px var(--font-mono); fill: var(--muted); }
+.timing .tlabel.q { fill: var(--ok); }
+.timing path { fill: none; stroke-width: 1.6; stroke-linejoin: round; }
+.timing path.clk { stroke: #a78bfa; }
+.timing path.in { stroke: #facc15; }
+.timing path.q { stroke: #4ade80; stroke-width: 2; }
+.timing .edge { stroke: rgba(167, 139, 250, 0.2); stroke-dasharray: 2 3; }

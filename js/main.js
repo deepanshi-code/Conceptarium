@@ -14,6 +14,7 @@ import { mountEfield } from './views/efield.js';
 import { mountWaves } from './views/waves.js';
 import { mountProjectile } from './views/projectile.js';
 import { mountLogic } from './views/logic.js';
+import { mountSequential } from './views/sequential.js';
 import { mountHanoi } from './views/hanoi.js';
 import { mountStackQueue } from './views/stackqueue.js';
 import { mountNetwork } from './views/network.js';
@@ -46,6 +47,7 @@ const VIEWS = {
   waves: mountWaves,
   projectile: mountProjectile,
   logic: mountLogic,
+  sequential: mountSequential,
   hanoi: mountHanoi,
   stackqueue: mountStackQueue,
   network: mountNetwork,

@@ -26,7 +26,8 @@ Text is kept short on purpose. Each concept opens with a one-line idea and where
 | **Electric Field & Potential** | Physics | Potential is height: + charges are hills, − charges are wells. Drag charges, watch field lines run downhill, and drop a test charge to see it roll along one. |
 | **Wave Interference** | Physics | Two sources on water make loud and calm stripes. Drag the sources and a probe; the panel shows the path difference in wavelengths. |
 | **Projectile Motion** | Physics | Aim a cannon by dragging its barrel, try to hit a draggable target, and compare arcs on Earth, the Moon, Mars and Jupiter. Live arrows show vₓ staying constant while v_y shrinks, flips and grows. Optional cliff height and air drag. |
-| **Logic Gates & Adders** | Digital Electronics | Click input switches; wires carrying a 1 glow and send pulses to the next gate. AND, OR, NOT, NAND, NOR, XOR, a half adder and a full adder, each with a clickable truth table. |
+| **Logic Gates & Circuits** | Digital Electronics | Click input switches; wires carrying a 1 glow and send pulses to the next gate. Three groups: gates (AND, OR, NOT, NAND, NOR, XOR, XNOR); arithmetic (half/full adder, half/full subtractor, 2-bit multiplier, 1-bit comparator); data routing (2:1 and 4:1 MUX, 1:4 DEMUX, 2:4 decoder, 4:2 priority encoder). Each has a clickable truth table and a one-line explanation of the current inputs. |
+| **Flip-Flops, Registers & Counters** | Digital Electronics | D, T, JK and SR flip-flops, a 4-bit parallel-load register, a 4-bit shift register (bits visibly hop right) and a 4-bit up/down counter. Press Clock (or Space, or Auto clock) and watch Q and a live timing diagram. |
 | **Tower of Hanoi & Recursion** | Data Structures & Algorithms | Solve it yourself by clicking pegs (illegal moves are explained), or watch the recursive solution with its live call stack. |
 | **Stack & Queue** | Data Structures & Algorithms | Push plates into a tube (LIFO) or roll boxes along a conveyor (FIFO); click a middle item to see why it can't leave. A third mode checks balanced brackets with a stack. |
 | **Packet Journey** | Computer Networks | A message goes laptop → router → server. Headers join the front on the way down (encapsulation); the router opens it only to the IP header; the receiver unwraps it. TCP/IP or OSI 7. |
@@ -71,7 +72,9 @@ js/views/drawing.js, development.js, sections.js, beam.js, fourier.js
 js/views/sorting.js, scheduling.js, efield.js, waves.js
 js/views/projectile.js, logic.js, hanoi.js, stackqueue.js, network.js
 js/phys/projectile.js  trajectory with optional v² drag (RK2)
-js/digital/logic.js    gates, half/full adder, truth tables
+js/digital/logic.js    gates and combinational circuits, truth tables
+js/digital/sequential.js  flip-flops, register, shift register, counter
+js/views/sequential.js   clock, flip-flops and the timing diagram
 js/algo/hanoi.js       moves with the recursion call stack
 js/net/packet.js       encapsulation steps through sender, router, receiver
 js/views/search.js, shm.js, perceptron.js, paging.js

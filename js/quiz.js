@@ -90,7 +90,11 @@ const Q = {
   ],
   logic: [
     ['Which gate outputs 1 only when its inputs are different?', ['AND', 'XOR', 'NOR'], 1, 'XOR = exclusive OR: one or the other, not both.'],
-    ['A half adder’s carry output is…', ['A AND B', 'A XOR B', 'A OR B'], 0, 'A carry happens only for 1 + 1.'],
+    ['How many select lines does a 4:1 multiplexer need?', ['1', '2', '4'], 1, '2 select bits give 2² = 4 choices. An 8:1 MUX needs 3.'],
+  ],
+  sequential: [
+    ['A JK flip-flop has J = 1 and K = 1. At the clock edge, Q…', ['Becomes 0', 'Becomes 1', 'Toggles'], 2, 'J = K = 1 is the toggle case. (In an SR flip-flop, S = R = 1 is not allowed.)'],
+    ['A 4-bit up counter shows 1111 (15). After one more clock edge it shows…', ['10000', '0000', '1111'], 1, 'Four bits cannot hold 16, so it wraps around to 0.'],
   ],
   network: [
     ['Which device reads the IP header to choose where a packet goes next?', ['Your app', 'A router', 'The cable'], 1, 'Routers work at the network layer: they read the destination IP.'],

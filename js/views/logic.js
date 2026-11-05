@@ -1,8 +1,9 @@
-// Digital electronics: logic gates and adders on a 3D board. Click the input switches; wires carrying a 1 glow
-// and send pulses towards the next gate, so you can follow a signal through the circuit.
+// Digital electronics: gates and combinational circuits (adders, subtractors, multiplier, comparator, MUX, DEMUX,
+// decoder, encoder) on a 3D board. Click the input switches; wires carrying a 1 glow and send pulses towards the
+// next gate, so you can follow a signal through the circuit.
 import * as THREE from 'three';
 import { createStage, makeLabel, clearGroup } from '../stage.js';
-import { CIRCUITS, evaluate, truthTable } from '../digital/logic.js';
+import { CIRCUITS, GROUPS, evaluate, truthTable } from '../digital/logic.js';
 import { interact } from '../interact.js';
 import { html } from '../ui.js';
 
@@ -10,8 +11,9 @@ const COL = 2.5;
 const ROW = 1.5;
 const ON = 0x4ade80;
 const OFF = 0x3a3f6b;
-const GATE_COLORS = { AND: 0x8b5cf6, OR: 0x22d3ee, NOT: 0xf472b6, NAND: 0xa78bfa, NOR: 0x38bdf8, XOR: 0xfacc15 };
-const TABS = ['and', 'or', 'not', 'nand', 'nor', 'xor', 'half', 'full'];
+const GATE_COLORS = { AND: 0x8b5cf6, OR: 0x22d3ee, NOT: 0xf472b6, NAND: 0xa78bfa, NOR: 0x38bdf8, XOR: 0xfacc15, XNOR: 0xfb923c };
+const SHORT = { half: 'Half add', full: 'Full add', halfsub: 'Half sub', fullsub: 'Full sub', multiplier: '2×2 mult', comparator: 'Compare', mux2: '2:1 MUX', mux4: '4:1 MUX', demux: '1:4 DEMUX', decoder: 'Decoder', encoder: 'Encoder' };
+const tabLabel = (k) => SHORT[k] ?? CIRCUITS[k].name.replace(' gate', '');
 const INSIGHT = {
   and: 'AND is 1 only when <b>both</b> inputs are 1. Like two switches in series.',
   or: 'OR is 1 when <b>at least one</b> input is 1. Like two switches in parallel.',
@@ -21,20 +23,34 @@ const INSIGHT = {
   xor: 'XOR is 1 when the inputs are <b>different</b>. It is the "sum" bit of binary addition.',
   half: 'A half adder adds two bits: XOR gives the <b>sum</b>, AND gives the <b>carry</b>. 1 + 1 = 10 in binary.',
   full: 'A full adder also takes a carry in. Chain 8 of them and you can add two bytes: that is the heart of a CPU’s ALU.',
+  xnor: 'XNOR is 1 when the inputs are <b>the same</b>. It is an equality checker for one bit.',
+  halfsub: 'A half subtractor works out A − B. XOR gives the <b>difference</b>; a <b>borrow</b> is needed only for 0 − 1.',
+  fullsub: 'A full subtractor also takes a borrow in, so they can be chained to subtract whole numbers.',
+  multiplier: 'Binary multiplication is AND (1 × 1 = 1) plus adding the partial products. Here half adders do the adding.',
+  comparator: 'A comparator tells which bit is bigger. Exactly one of the three lights is on.',
+  mux2: 'A multiplexer is a <b>switch</b>: the select line S chooses which input reaches the output.',
+  mux4: 'With 2 select lines a MUX picks 1 of 4 inputs (2² = 4). Used to share one wire or bus between many signals.',
+  demux: 'A demultiplexer is the reverse of a MUX: one input D is <b>sent to</b> the output chosen by S1 S0.',
+  decoder: 'A decoder turns a binary number into “which one?”: input AB = 10 lights only output D2. Used to pick a memory chip.',
+  encoder: 'An encoder does the reverse: it outputs the binary number of the active input. A <b>priority</b> encoder picks the highest if several are on; V says whether any input is on.',
 };
 
 export function mountLogic(root) {
   root.innerHTML = html`
     <div class="viewport" data-viewport></div>
     <aside class="panel">
-      <h2>Logic Gates &amp; Adders</h2>
-      <p class="lede">Computers work with bits: 0 (off) and 1 (on). A <b>logic gate</b> takes bits in and gives one bit out by a fixed rule. Wire gates together and you can <b>add numbers</b>: that is how a CPU does arithmetic.</p>
+      <h2>Logic Gates &amp; Circuits</h2>
+      <p class="lede">Computers work with bits: 0 (off) and 1 (on). A <b>logic gate</b> takes bits in and gives one bit out by a fixed rule. Wire gates together and you get circuits that <b>add, subtract, multiply, compare and route data</b>. These are <i>combinational</i>: the output depends only on the inputs right now.</p>
 
       <h3>Circuit</h3>
-      <div class="tabs four" data-circuits>${TABS.map((k) => `<button data-circuit="${k}">${CIRCUITS[k].name.replace(' gate', '')}</button>`).join('')}</div>
+      <div class="segmented" role="radiogroup">
+        ${Object.entries(GROUPS).map(([k, g], i) => `<label><input type="radio" name="group" value="${k}" ${i === 0 ? 'checked' : ''}> ${g.name}</label>`).join('')}
+      </div>
+      <div class="tabs four" data-circuits></div>
+      <h4 class="circuit-name" data-name></h4>
 
       <h3>Truth table</h3>
-      <table class="stats truth" data-table></table>
+      <div class="truth-wrap"><table class="stats truth" data-table></table></div>
       <p class="hint">Click a row (or the switches in 3D) to set the inputs.</p>
       <div class="notice" data-sum hidden></div>
       <p class="hint" data-insight></p>
@@ -45,7 +61,11 @@ export function mountLogic(root) {
   const stage = createStage($('[data-viewport]'), { cameraPosition: [0.5, 1, 11], axes: false, grid: false });
   const board = new THREE.Group();
   stage.scene.add(board);
-  const state = { key: 'xor', values: {}, wires: [], switches: [], leds: [], pulses: [] };
+  const state = { group: 'gates', key: 'and', values: {}, wires: [], switches: [], leds: [], pulses: [] };
+
+  function renderTabs() {
+    $('[data-circuits]').innerHTML = GROUPS[state.group].keys.map((k) => `<button data-circuit="${k}">${tabLabel(k)}</button>`).join('');
+  }
 
   function layout(c) {
     const n = c.inputs.length;
@@ -93,12 +113,13 @@ export function mountLogic(root) {
     });
 
     c.gates.forEach((g) => {
-      const body = new THREE.Mesh(new THREE.BoxGeometry(1.3, 0.95, 0.5), new THREE.MeshStandardMaterial({ color: GATE_COLORS[g.type], roughness: 0.35, metalness: 0.2 }));
+      const h = Math.max(0.95, g.in.length * 0.32);
+      const body = new THREE.Mesh(new THREE.BoxGeometry(1.3, h, 0.5), new THREE.MeshStandardMaterial({ color: GATE_COLORS[g.type], roughness: 0.35, metalness: 0.2 }));
       body.position.copy(pos[g.id]);
       body.add(makeLabel(g.type, new THREE.Vector3(0, 0, 0.3), 0x0b0720, 'gate-label'));
       board.add(body);
       g.in.forEach((src, k) => {
-        const pinY = g.in.length === 1 ? 0 : k === 0 ? 0.25 : -0.25;
+        const pinY = ((g.in.length - 1) / 2 - k) * (g.in.length > 2 ? 0.28 : 0.5);
         const target = pos[g.id].clone().add(new THREE.Vector3(-0.65, pinY, 0));
         state.wires.push({ src, ...wire(pos[src].clone().add(new THREE.Vector3(src in state.values ? 0 : 0.2, 0, 0)), target, lane++ % 3 - 1) });
       });
@@ -127,10 +148,12 @@ export function mountLogic(root) {
 
     // Fit the camera to the circuit: wider circuits need it further back.
     const lastCol = Math.max(...c.gates.map((g) => g.col)) + 1;
-    stage.camera.position.set(0, 0.8, 5.5 + lastCol * 2.9);
+    const tall = Math.max(c.inputs.length, Object.keys(c.outputs).length * 1.2, ...c.gates.map((g) => Math.abs(g.row) * 2 + 1));
+    stage.camera.position.set(0, 0.8, Math.max(5.5 + lastCol * 2.9, 4 + tall * 2.3));
     stage.controls.target.set(0, 0, 0);
     stage.saveHome(); // the toolbar's Reset view returns here
     root.querySelectorAll('[data-circuit]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.circuit === state.key)));
+    $('[data-name]').textContent = c.name;
     $('[data-insight]').innerHTML = INSIGHT[state.key];
     renderTable();
     refresh();
@@ -162,16 +185,24 @@ export function mountLogic(root) {
     });
     const index = c.inputs.reduce((acc, n) => acc * 2 + state.values[n], 0);
     root.querySelectorAll('[data-row]').forEach((tr) => tr.classList.toggle('current', Number(tr.dataset.row) === index));
-    const sum = $('[data-sum]');
-    sum.hidden = !(state.key === 'half' || state.key === 'full');
-    if (!sum.hidden) {
-      const ins = c.inputs.map((n) => state.values[n]);
-      const outs = Object.values(c.outputs).map((id) => v[id]); // [sum, carry]
-      sum.innerHTML = `${ins.join(' + ')} = <b>${outs[1]}${outs[0]}</b> in binary = <b>${outs[1] * 2 + outs[0]}</b>`;
-    }
+    const text = explain(state.key, state.values, Object.fromEntries(Object.entries(c.outputs).map(([name, id]) => [name, v[id]])));
+    $('[data-sum]').hidden = !text;
+    $('[data-sum]').innerHTML = text ?? '';
+    root.querySelector('[data-row].current')?.scrollIntoView({ block: 'nearest' });
   }
 
-  root.querySelectorAll('[data-circuit]').forEach((b) => b.addEventListener('click', () => { state.key = b.dataset.circuit; build(); }));
+  root.querySelectorAll('input[name=group]').forEach((r) => r.addEventListener('change', () => {
+    state.group = r.value;
+    state.key = GROUPS[state.group].keys[0];
+    renderTabs();
+    build();
+  }));
+  $('[data-circuits]').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-circuit]');
+    if (!b) return;
+    state.key = b.dataset.circuit;
+    build();
+  });
   $('[data-table]').addEventListener('click', (e) => {
     const tr = e.target.closest('[data-row]');
     if (!tr) return;
@@ -202,9 +233,58 @@ export function mountLogic(root) {
     });
   });
 
+  renderTabs();
   build();
   return () => {
     stopInteract();
     stage.dispose();
   };
+}
+
+// One line in plain words: what the circuit just did with these inputs.
+function explain(key, i, o) {
+  const bin = (...bits) => bits.join('');
+  switch (key) {
+    case 'half':
+    case 'full': {
+      const carry = o.Carry ?? o.Cout;
+      const ins = key === 'half' ? [i.A, i.B] : [i.A, i.B, i.Cin];
+      return `${ins.join(' + ')} = <b>${bin(carry, o.Sum)}</b> in binary = <b>${2 * carry + o.Sum}</b>`;
+    }
+    case 'halfsub':
+    case 'fullsub': {
+      const borrow = o.Borrow ?? o.Bout;
+      const ins = key === 'halfsub' ? [i.A, i.B] : [i.A, i.B, i.Bin];
+      const value = ins.slice(1).reduce((a, b) => a - b, ins[0]);
+      return `${ins.join(' − ')} = <b>${value}</b>. Diff ${o.Diff}, ${borrow ? '<b>borrow 1</b> (we took 2 from the next column)' : 'no borrow'}.`;
+    }
+    case 'multiplier': {
+      const a = 2 * i.A1 + i.A0;
+      const b = 2 * i.B1 + i.B0;
+      return `${bin(i.A1, i.A0)} × ${bin(i.B1, i.B0)} = <b>${bin(o.P3, o.P2, o.P1, o.P0)}</b>, that is ${a} × ${b} = <b>${a * b}</b>`;
+    }
+    case 'comparator':
+      return `A = ${i.A}, B = ${i.B}: <b>${i.A > i.B ? 'A > B' : i.A < i.B ? 'A < B' : 'A = B'}</b>`;
+    case 'mux2':
+      return `S = ${i.S} selects <b>I${i.S}</b>, so Y = I${i.S} = <b>${o.Y}</b>`;
+    case 'mux4': {
+      const sel = 2 * i.S1 + i.S0;
+      return `S1 S0 = ${bin(i.S1, i.S0)} = ${sel} selects <b>I${sel}</b>, so Y = <b>${o.Y}</b>`;
+    }
+    case 'demux': {
+      const sel = 2 * i.S1 + i.S0;
+      return `S1 S0 = ${bin(i.S1, i.S0)} sends D = ${i.D} to <b>Y${sel}</b>. The other outputs stay 0.`;
+    }
+    case 'decoder': {
+      const sel = 2 * i.A + i.B;
+      return `AB = ${bin(i.A, i.B)} = ${sel}, so only <b>D${sel}</b> is on`;
+    }
+    case 'encoder': {
+      if (!o.V) return 'No input is on, so V = 0 and Y means nothing.';
+      const top = [3, 2, 1, 0].find((k) => i[`I${k}`]);
+      return `Highest active input is <b>I${top}</b>, so Y1 Y0 = <b>${bin(o.Y1, o.Y0)}</b> (= ${top}), V = 1`;
+    }
+    default:
+      return null;
+  }
 }
