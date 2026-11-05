@@ -116,6 +116,34 @@ const Q = {
     ['Which algorithm can get MORE page faults when given MORE frames (Belady’s anomaly)?', ['FIFO', 'LRU', 'Optimal'], 0, 'LRU and Optimal are stack algorithms and never suffer from it.'],
     ['LRU replaces the page that…', ['Arrived first', 'Was used least recently', 'Will be used farthest in the future'], 1, 'Farthest in the future is Optimal, which needs to know the future.'],
   ],
+  orbitals: [
+    ['How many electrons can one orbital hold?', ['1', '2', '8'], 1, 'At most two, with opposite spins (Pauli exclusion principle).'],
+    ['Oxygen (2p⁴) has how many unpaired electrons?', ['0', '2', '4'], 1, "Hund's rule: three boxes get one each, the fourth electron pairs up: ↑↓ ↑ ↑."],
+  ],
+  vsepr: [
+    ['Water has 2 bonds and 2 lone pairs. Its shape is…', ['Linear', 'Bent', 'Tetrahedral'], 1, 'The 4 domains are tetrahedral, but we only see the atoms: a bent molecule (104.5°).'],
+    ['CH₄ has which bond angle?', ['90°', '109.5°', '120°'], 1, 'Four bonds as far apart as possible point to the corners of a tetrahedron.'],
+  ],
+  crystal: [
+    ['How many atoms belong to one FCC unit cell?', ['2', '4', '14'], 1, '8 corners × ⅛ + 6 faces × ½ = 1 + 3 = 4.'],
+    ['Which packs atoms most tightly?', ['Simple cubic', 'BCC', 'FCC'], 2, 'FCC fills 74% of space, BCC 68%, simple cubic 52%.'],
+  ],
+  gears: [
+    ['A 20-tooth gear at 100 rpm drives a 40-tooth gear. The big gear turns at…', ['50 rpm', '200 rpm', '100 rpm'], 0, 'Speed scales by 20/40, and its torque doubles.'],
+    ['What does an idler gear between two gears change?', ['The speed ratio', 'The direction of the output', 'Nothing at all'], 1, 'Its teeth cancel out of the ratio, but every extra mesh flips the direction.'],
+  ],
+  engine: [
+    ['How many crank turns does one four-stroke cycle take?', ['1', '2', '4'], 1, 'Four strokes, each half a turn: two full turns.'],
+    ['The stroke length of a slider-crank with crank radius r is…', ['r', '2r', 'The rod length'], 1, 'The piston moves from top dead centre (l + r) to bottom (l − r).'],
+  ],
+  dna: [
+    ['In DNA, adenine (A) always pairs with…', ['Guanine', 'Thymine', 'Uracil'], 1, 'A–T and G–C. In RNA, uracil (U) replaces thymine.'],
+    ['How many bases make one codon?', ['2', '3', '4'], 1, 'Three bases: 4³ = 64 codons, enough for 20 amino acids plus stop signals.'],
+  ],
+  cell: [
+    ['Which organelle releases energy as ATP?', ['Golgi apparatus', 'Mitochondrion', 'Nucleus'], 1, 'Mitochondria carry out aerobic respiration.'],
+    ['Which of these is found in plant cells but not animal cells?', ['Ribosome', 'Chloroplast', 'Mitochondrion'], 1, 'Chloroplasts (and the cell wall) are plant-only. Both have mitochondria and ribosomes.'],
+  ],
 };
 
 export const hasQuiz = (path) => Boolean(Q[path]);

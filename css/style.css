@@ -728,3 +728,39 @@ kbd { font: 600 10px/1 var(--font-mono); padding: 3px 5px; border-radius: 5px; b
 .timing path.in { stroke: #facc15; }
 .timing path.q { stroke: #4ade80; stroke-width: 2; }
 .timing .edge { stroke: rgba(167, 139, 250, 0.2); stroke-dasharray: 2 3; }
+
+/* --- Chemistry ------------------------------------------------------------ */
+.element-card { display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto; gap: 0 14px; align-items: center; margin: 4px 0 10px; padding: 12px 16px; border-radius: 12px; border: 1px solid rgba(45, 212, 191, 0.35); background: rgba(45, 212, 191, 0.07); }
+.element-card .z { grid-row: 1; font: 600 12px/1 var(--font-mono); color: var(--muted); }
+.element-card .sym { grid-row: 1 / span 2; grid-column: 1; font: 700 34px/1 'Space Grotesk', sans-serif; color: #2dd4bf; margin-top: 14px; }
+.element-card .name { grid-row: 1 / span 2; grid-column: 2; font-size: 16px; font-weight: 600; }
+.orbital-rows { display: grid; gap: 4px; }
+.orbital-row { display: flex; align-items: center; gap: 10px; padding: 6px 10px; border-radius: 10px; border: 1px solid var(--border); background: transparent; color: var(--text); cursor: pointer; font: inherit; }
+.orbital-row:hover, .orbital-row.current { border-color: #2dd4bf; background: rgba(45, 212, 191, 0.08); }
+.orbital-row .sub { width: 28px; font: 600 13px var(--font-mono); }
+.orbital-row .boxes { display: flex; gap: 3px; flex: 1; }
+.orbital-row .box { width: 26px; height: 22px; display: grid; place-items: center; border: 1px solid var(--border-strong); border-radius: 4px; font-size: 13px; color: #facc15; }
+.orbital-row .count { font: 500 11px var(--font-mono); color: var(--muted); }
+
+/* --- Mechanical: engine ------------------------------------------------------ */
+.stroke-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-bottom: 10px; }
+.stroke-strip span { text-align: center; padding: 7px 2px; border-radius: 8px; border: 1px solid var(--border); font: 600 10px/1 var(--font-mono); text-transform: uppercase; color: var(--muted); }
+.stroke-strip span.current { color: #0b0720; background: #facc15; border-color: transparent; }
+
+/* --- Biology ---------------------------------------------------------------- */
+.seq-box { display: grid; gap: 6px; }
+.seq-box small { display: block; color: var(--muted); font: 600 10px/1.4 var(--font-mono); text-transform: uppercase; letter-spacing: 0.06em; }
+.seq-box code { display: block; font: 12px/1.6 var(--font-mono); word-break: break-all; color: var(--text); }
+.seq-box .codon { padding: 0 1px; }
+.seq-box .codon.in:nth-of-type(odd) { background: rgba(167, 139, 250, 0.18); border-radius: 3px; }
+.dim { color: var(--muted); }
+.protein { display: flex; flex-wrap: wrap; align-items: center; gap: 2px; font: 600 12px/1.8 var(--font-mono); }
+.protein .aa { padding: 1px 6px; border-radius: 6px; background: rgba(134, 239, 172, 0.12); color: #86efac; }
+.protein .aa.stop { background: rgba(255, 107, 139, 0.15); color: var(--danger); }
+.protein .bond { color: var(--muted); }
+.idx-label.base { font-weight: 700; font-size: 11px; }
+.organelle-card { margin: 14px 0 6px; padding: 12px 14px; border-radius: 12px; border: 1px solid rgba(134, 239, 172, 0.3); background: rgba(134, 239, 172, 0.06); min-height: 64px; }
+.organelle-card h4 { margin: 0 0 6px; font: 600 16px/1.2 Inter, sans-serif; text-transform: none; letter-spacing: 0; color: #86efac; }
+.organelle-card p { margin: 0 0 6px; line-height: 1.5; }
+.organelle-card .like { color: var(--muted); }
+.organelle-card small { color: var(--muted); }

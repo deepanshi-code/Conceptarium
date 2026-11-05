@@ -13,6 +13,8 @@ export const SUBJECTS = {
   os: { name: 'Operating Systems', color: '#f87171' },
   digital: { name: 'Digital Electronics', color: '#e879f9' },
   net: { name: 'Computer Networks', color: '#a3e635' },
+  chem: { name: 'Chemistry', color: '#2dd4bf' },
+  bio: { name: 'Biology', color: '#86efac' },
 };
 
 export const CATALOG = [
@@ -43,6 +45,20 @@ export const CATALOG = [
     real: 'Bridges, shelves, cranes, diving boards',
     blurb: 'Load a beam and watch it bend, with the shear force and bending moment diagrams built in 3D behind it.',
     steps: ['<b>Drag the red load arrow</b> (or grab the beam anywhere) and watch the bending moment peak follow it.', 'Switch to a <b>cantilever</b>: where is the moment largest now?', 'Notice the maximum bending moment is where the shear force crosses zero.'],
+  },
+  {
+    path: 'gears', subject: 'mech', icon: '⚙️', title: 'Gear Trains',
+    idea: 'Small gear drives big gear: slower but stronger. The tooth ratio decides by how much.',
+    real: 'Bicycles, clocks, car gearboxes, mixers',
+    blurb: 'Simple and compound gear trains that really mesh, with speed ratio, direction and torque.',
+    steps: ['Drag the <b>tooth sliders</b> and watch the speeds change.', 'Press <b>+ Gear</b>: the middle one is an idler. What does it change?', 'Switch to <b>Compound train</b> for a 9 : 1 reduction in a small space.'],
+  },
+  {
+    path: 'engine', subject: 'mech', icon: '🏎️', title: 'Four-Stroke Engine',
+    idea: 'A slider-crank turns up-and-down into rotation; four strokes need two crank turns.',
+    real: 'Bikes, cars, generators, pumps',
+    blurb: 'Watch intake, compression, power and exhaust with valves and spark, and see why piston motion is not a pure sine.',
+    steps: ['Watch the colours: <b>blue</b> intake, <b>orange</b> power after the spark.', 'Make the <b>Rod / crank</b> ratio small: the yellow curve gets lopsided.', 'Change the <b>crank radius</b>: the stroke is always 2r.'],
   },
   {
     path: 'fourier', subject: 'maths', icon: '🌀', title: 'Fourier Series',
@@ -211,6 +227,41 @@ export const CATALOG = [
     real: 'Every website you open, WhatsApp, email',
     blurb: 'Send a message from a laptop through a router to a server, and watch headers being added and removed.',
     steps: ['Press <b>Send</b> and watch headers join the front of your message.', 'Notice the <b>router</b> only opens it down to the IP header.', 'Switch to <b>OSI 7</b> and compare.'],
+  },
+  {
+    path: 'orbitals', subject: 'chem', icon: '⚛️', title: 'Atomic Orbitals',
+    idea: 'Electrons live in clouds: s is a sphere, p a dumbbell, d a clover. Two electrons per orbital.',
+    real: 'The periodic table, chemical bonding, magnets',
+    blurb: 'Pick an element, fill its orbitals (Aufbau, Hund’s rule) and see the 3D shapes of s, p and d orbitals.',
+    steps: ['Slide <b>Z</b> from 1 upwards and watch the boxes fill.', '<b>Click a row</b> (like 2p or 3d) to see its orbitals in 3D.', 'Try <b>Cr (24)</b> and <b>Cu (29)</b>: spot the exception.'],
+  },
+  {
+    path: 'vsepr', subject: 'chem', icon: '🧪', title: 'Molecular Shapes (VSEPR)',
+    idea: 'Bonds and lone pairs push apart as far as they can. That fixes the molecule’s shape.',
+    real: 'Why water is bent, why ice floats, drug design',
+    blurb: 'CH₄ to SF₆ and XeF₄ in 3D, with lone pairs, bond angles, shape names and hybridisation.',
+    steps: ['Compare <b>CH₄</b>, <b>NH₃</b> and <b>H₂O</b>: same 4 domains, different shapes.', 'Turn <b>lone pairs</b> off and on.', 'Open <b>XeF₄</b>: why is it flat?'],
+  },
+  {
+    path: 'crystal', subject: 'chem', icon: '💎', title: 'Crystal Lattices',
+    idea: 'Metals are atoms stacked in repeating boxes. Corner atoms are shared by 8 boxes.',
+    real: 'Steel, copper wires, semiconductors, gemstones',
+    blurb: 'SC, BCC and FCC unit cells: atoms per cell, coordination number and packing efficiency.',
+    steps: ['Tick <b>Cut atoms to the cell</b>: see the ⅛ and ½ slices.', 'Switch between <b>SC, BCC, FCC</b> and compare packing.', 'Show the <b>3 × 3 × 3 block</b> and click a middle atom to count its neighbours.'],
+  },
+  {
+    path: 'dna', subject: 'bio', icon: '🧬', title: 'DNA to Protein',
+    idea: 'DNA is copied into mRNA, and a ribosome reads it three letters at a time to build a protein.',
+    real: 'Genetic diseases, vaccines (mRNA), forensics',
+    blurb: 'A double helix with paired bases, transcription to mRNA, translation by a ribosome, and point mutations.',
+    steps: ['Press <b>Make the protein</b>: mRNA forms, then amino acids join.', 'Press <b>Mutate one base</b> a few times: silent, missense or nonsense?', 'Type your own gene: it needs ATG to start.'],
+  },
+  {
+    path: 'cell', subject: 'bio', icon: '🦠', title: 'Inside a Cell',
+    idea: 'A cell is a tiny factory: each organelle has one job.',
+    real: 'Medicine, nutrition, how plants grow',
+    blurb: 'Explore animal and plant cells in 3D, click organelles to learn their jobs, and play “find it”.',
+    steps: ['<b>Click any organelle</b> to see what it does.', 'Switch to <b>Plant cell</b>: what is new?', 'Press <b>Start the game</b> and find the organelles.'],
   },
 ];
 

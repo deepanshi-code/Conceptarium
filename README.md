@@ -35,6 +35,13 @@ Text is kept short on purpose. Each concept opens with a one-line idea and where
 | **Simple Harmonic Motion** | Physics | Spring and pendulum with a live x(t) trace and the reference circle that explains SHM. Drag the mass to release it; large pendulum swings visibly fall behind the ideal sine. |
 | **Perceptron** | Machine Learning | A tilted score sheet whose floor crossing is the decision line. Train step by step, add points by clicking, and see XOR never converge. |
 | **Page Replacement** | Operating Systems | FIFO, LRU and Optimal on an editable request string, with hits and faults as a 3D grid, a comparison table and Belady's anomaly. |
+| **Gear Trains** | Mechanics | Simple and compound trains whose teeth really interlock; speed ratio, direction, torque, and what an idler does. |
+| **Four-Stroke Engine** | Mechanics | A slider-crank engine with valves, spark and gas colours for intake, compression, power and exhaust, plus piston height vs a pure cosine. |
+| **Atomic Orbitals** | Chemistry | Electron configuration for Z = 1 to 36 (Aufbau, Hund's rule, the Cr and Cu exceptions) as orbital boxes, and the 3D shapes of s, p and d orbitals coloured by phase. |
+| **Molecular Shapes (VSEPR)** | Chemistry | 14 molecules from BeCl₂ to XeF₄ with lone-pair lobes, measured bond angles, shape names and hybridisation. |
+| **Crystal Lattices** | Chemistry | SC, BCC and FCC unit cells; cut atoms to the cell to see the ⅛ and ½ shares, count neighbours, compare packing (52 / 68 / 74%). |
+| **DNA to Protein** | Biology | Double helix with A–T / G–C pairs, transcription to mRNA, a ribosome translating codons, and random point mutations labelled silent, missense or nonsense. |
+| **Inside a Cell** | Biology | Animal and plant cells in 3D with clickable organelles (job + everyday comparison), a cut-away view and a "find the organelle" game. |
 
 ## Run locally
 
@@ -83,6 +90,10 @@ js/quiz.js             "Check yourself" questions for every concept
 js/progress.js         explored / mastered progress (localStorage)
 js/palette.js          Ctrl K quick search
 js/toolbar.js          reset view, fullscreen, screenshot
+js/chem/orbitals.js, vsepr.js, crystal.js   electron configuration, VSEPR geometry, unit cells
+js/mech/gears.js, slidercrank.js            gear trains, piston kinematics, four-stroke timing
+js/bio/dna.js                               genetic code, transcription, translation, mutations
+js/views/orbitals.js, vsepr.js, crystal.js, gears.js, engine.js, dna.js, cell.js
 js/ds/brackets.js      balanced-bracket check with a stack
 js/algo/sort.js     sorting algorithms that record every step
 js/os/schedule.js   FCFS / SJF / SRTF / Round Robin / Priority

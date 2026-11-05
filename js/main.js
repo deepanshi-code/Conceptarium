@@ -22,6 +22,13 @@ import { mountSearch } from './views/search.js';
 import { mountShm } from './views/shm.js';
 import { mountPerceptron } from './views/perceptron.js';
 import { mountPaging } from './views/paging.js';
+import { mountOrbitals } from './views/orbitals.js';
+import { mountVsepr } from './views/vsepr.js';
+import { mountCrystal } from './views/crystal.js';
+import { mountGears } from './views/gears.js';
+import { mountEngine } from './views/engine.js';
+import { mountDna } from './views/dna.js';
+import { mountCell } from './views/cell.js';
 import { mountHome } from './home.js';
 import { showCoach } from './coach.js';
 import { attachToolbar, toggleFullscreen } from './toolbar.js';
@@ -55,6 +62,13 @@ const VIEWS = {
   shm: mountShm,
   perceptron: mountPerceptron,
   paging: mountPaging,
+  orbitals: mountOrbitals,
+  vsepr: mountVsepr,
+  crystal: mountCrystal,
+  gears: mountGears,
+  engine: mountEngine,
+  dna: mountDna,
+  cell: mountCell,
 };
 
 const app = document.getElementById('app');
