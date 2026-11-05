@@ -73,6 +73,13 @@ export const CATALOG = [
     steps: ['Press <b>Play</b> and watch the balls roll downhill.', '<b>Click on the surface</b> to drop the balls somewhere new.', 'Push the <b>learning rate</b> past the stability limit and watch it diverge.'],
   },
   {
+    path: 'perceptron', subject: 'ml', icon: '🧠', title: 'Perceptron',
+    idea: 'One artificial neuron learns a straight dividing line, one mistake at a time.',
+    real: 'Spam filters, the building block of neural networks',
+    blurb: 'Watch a single neuron tilt its decision sheet until pink and cyan points are split, and see why XOR defeats it.',
+    steps: ['Press <b>Train</b> and watch the sheet tilt after each mistake.', '<b>Click the floor</b> to add your own points.', 'Try <b>XOR</b>: it never finishes. Why?'],
+  },
+  {
     path: 'structures/list', subject: 'dsa', icon: '🔗', title: 'Linked List vs Array',
     idea: 'Arrays sit side by side in memory; list nodes are scattered and linked.',
     real: 'Undo history, music playlists',
@@ -122,6 +129,13 @@ export const CATALOG = [
     steps: ['Press <b>Push</b> and <b>Pop</b>: only the top plate moves.', '<b>Click a plate in the middle</b>: see why it is stuck.', 'Switch to <b>Brackets</b> and try the crossed example.'],
   },
   {
+    path: 'search', subject: 'dsa', icon: '🔍', title: 'Binary Search',
+    idea: 'Open the middle box and throw away half. 1,000,000 items need only 20 guesses.',
+    real: 'Dictionary lookup, git bisect, database indexes',
+    blurb: 'A guessing game with sorted, closed boxes. Then watch binary and linear search on the same boxes.',
+    steps: ['<b>Click a box</b> to open it. Try to find the target in as few guesses as you can.', 'Press <b>Watch binary</b>, then <b>Watch linear</b> on the same boxes.', 'Switch to <b>63 boxes</b>: binary search needs only one more guess.'],
+  },
+  {
     path: 'sorting', subject: 'dsa', icon: '📊', title: 'Sorting Race',
     idea: 'Five sorting algorithms race on the same bars. Fewer steps wins.',
     real: 'Every sort() call, leaderboards, search results',
@@ -143,6 +157,13 @@ export const CATALOG = [
     steps: ['Watch the <b>red glass blocks</b>: that is time spent waiting.', 'Switch from <b>FCFS</b> to <b>SJF</b>: the red shrinks.', 'Try <b>Round Robin</b> and change the time slice q.', 'Edit the burst times in the table and see who wins.'],
   },
   {
+    path: 'paging', subject: 'os', icon: '🗃️', title: 'Page Replacement',
+    idea: 'RAM is full and a new page is needed. Which page gets thrown out?',
+    real: 'Virtual memory, browser caches, CPU caches',
+    blurb: 'FIFO, LRU and Optimal on the same requests, with page faults in red and Belady’s anomaly.',
+    steps: ['Watch the columns appear: <b>green = hit</b>, <b>red = page fault</b>.', 'Switch between <b>FIFO</b>, <b>LRU</b> and <b>Optimal</b> and compare the fault count.', 'Press <b>Belady’s anomaly</b>: more frames, more faults!'],
+  },
+  {
     path: 'efield', subject: 'phys', icon: '⚡', title: 'Electric Field & Potential',
     idea: 'Positive charges are hills, negative charges are wells. Field lines run downhill.',
     real: 'Capacitors, lightning rods, touch screens',
@@ -162,6 +183,13 @@ export const CATALOG = [
     real: 'Cricket throws, basketball shots, water fountains',
     blurb: 'Aim a cannon, hit a target, compare arcs on Earth, the Moon, Mars and Jupiter.',
     steps: ['<b>Drag the cannon barrel</b> to aim, then press <b>Fire</b>.', '<b>Drag the red flag</b> and try to hit it.', 'Fire at <b>30°</b>, then <b>60°</b>: same landing spot!'],
+  },
+  {
+    path: 'shm', subject: 'phys', icon: '〰️', title: 'Simple Harmonic Motion',
+    idea: 'A bouncing spring is the shadow of a point going round a circle.',
+    real: 'Clocks, car suspension, guitar strings, earthquakes',
+    blurb: 'A spring and a pendulum trace sine waves in time, next to the reference circle that explains them.',
+    steps: ['<b>Drag the yellow mass</b> down and let go.', 'Change the <b>mass</b> and <b>stiffness</b>: watch the period.', 'Switch to <b>Pendulum</b>, set 70°, and see it fall behind the ideal sine.'],
   },
   {
     path: 'logic', subject: 'digital', icon: '💡', title: 'Logic Gates & Adders',

@@ -6,6 +6,8 @@ Interactive 3D visualizations of engineering concepts that are hard to understan
 
 The landing page has a northern-lights hero with a 3D planet horizon, a "concept sky" where each subject is a constellation of clickable stars, and a searchable catalog of 3D-tilting cards. Inside each concept you can drag and click the 3D objects directly.
 
+**Built-in help for students:** every concept ends with a two-question "Check yourself" quiz that explains each answer; the home page tracks what you have explored and mastered (stored only in your browser); <kbd>Ctrl K</kbd> or <kbd>/</kbd> opens quick search; each 3D view has Reset view (<kbd>R</kbd>), Fullscreen (<kbd>F</kbd>) and Screenshot buttons; <kbd>←</kbd> <kbd>→</kbd> move between concepts.
+
 Text is kept short on purpose. Each concept opens with a one-line idea and where you meet it in real life; the longer explanation is folded under "Explain more", and a one-line "Try 1/3" strip suggests what to do next.
 
 | Visualization | Subject | What you can do |
@@ -28,6 +30,10 @@ Text is kept short on purpose. Each concept opens with a one-line idea and where
 | **Tower of Hanoi & Recursion** | Data Structures & Algorithms | Solve it yourself by clicking pegs (illegal moves are explained), or watch the recursive solution with its live call stack. |
 | **Stack & Queue** | Data Structures & Algorithms | Push plates into a tube (LIFO) or roll boxes along a conveyor (FIFO); click a middle item to see why it can't leave. A third mode checks balanced brackets with a stack. |
 | **Packet Journey** | Computer Networks | A message goes laptop → router → server. Headers join the front on the way down (encapsulation); the router opens it only to the IP header; the receiver unwraps it. TCP/IP or OSI 7. |
+| **Binary Search** | Data Structures & Algorithms | A guessing game with sorted, closed boxes: each wrong guess sinks the half that can't hold the target. Then watch binary and linear search on the same boxes. |
+| **Simple Harmonic Motion** | Physics | Spring and pendulum with a live x(t) trace and the reference circle that explains SHM. Drag the mass to release it; large pendulum swings visibly fall behind the ideal sine. |
+| **Perceptron** | Machine Learning | A tilted score sheet whose floor crossing is the decision line. Train step by step, add points by clicking, and see XOR never converge. |
+| **Page Replacement** | Operating Systems | FIFO, LRU and Optimal on an editable request string, with hits and faults as a 3D grid, a comparison table and Belady's anomaly. |
 
 ## Run locally
 
@@ -68,6 +74,12 @@ js/phys/projectile.js  trajectory with optional v² drag (RK2)
 js/digital/logic.js    gates, half/full adder, truth tables
 js/algo/hanoi.js       moves with the recursion call stack
 js/net/packet.js       encapsulation steps through sender, router, receiver
+js/views/search.js, shm.js, perceptron.js, paging.js
+js/algo/search.js, js/phys/shm.js, js/ml/perceptron.js, js/os/paging.js
+js/quiz.js             "Check yourself" questions for every concept
+js/progress.js         explored / mastered progress (localStorage)
+js/palette.js          Ctrl K quick search
+js/toolbar.js          reset view, fullscreen, screenshot
 js/ds/brackets.js      balanced-bracket check with a stack
 js/algo/sort.js     sorting algorithms that record every step
 js/os/schedule.js   FCFS / SJF / SRTF / Round Robin / Priority

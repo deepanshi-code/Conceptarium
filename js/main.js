@@ -17,8 +17,17 @@ import { mountLogic } from './views/logic.js';
 import { mountHanoi } from './views/hanoi.js';
 import { mountStackQueue } from './views/stackqueue.js';
 import { mountNetwork } from './views/network.js';
+import { mountSearch } from './views/search.js';
+import { mountShm } from './views/shm.js';
+import { mountPerceptron } from './views/perceptron.js';
+import { mountPaging } from './views/paging.js';
 import { mountHome } from './home.js';
 import { showCoach } from './coach.js';
+import { attachToolbar, toggleFullscreen } from './toolbar.js';
+import { renderQuiz } from './quiz.js';
+import { markVisited } from './progress.js';
+import { openPalette } from './palette.js';
+import { stageFor } from './stage.js';
 import { CATALOG, SUBJECTS, findByPath } from './catalog.js';
 
 const VIEWS = {
@@ -40,6 +49,10 @@ const VIEWS = {
   hanoi: mountHanoi,
   stackqueue: mountStackQueue,
   network: mountNetwork,
+  search: mountSearch,
+  shm: mountShm,
+  perceptron: mountPerceptron,
+  paging: mountPaging,
 };
 
 const app = document.getElementById('app');
@@ -83,8 +96,14 @@ function refreshChrome() {
   next.href = `#/${after.path}`;
   next.innerHTML = `Next: ${after.title} →`;
   const viewport = app.querySelector('.viewport');
-  if (viewport) showCoach(viewport, concept);
-  simplifyPanel(app.querySelector('.panel'), concept);
+  if (viewport) {
+    showCoach(viewport, concept);
+    attachToolbar(viewport, concept);
+  }
+  const panel = app.querySelector('.panel');
+  simplifyPanel(panel, concept);
+  if (panel) renderQuiz(panel, concept);
+  markVisited(concept.path);
 }
 
 // Keep the side panel light: the one-line idea and a real-world use come first, and the longer
@@ -112,6 +131,27 @@ function simplifyPanel(panel, concept) {
 
 // Long hints are clamped to two lines in CSS; a click shows the rest.
 app.addEventListener('click', (e) => e.target.closest('.panel .hint')?.classList.toggle('open'));
+
+// Keyboard shortcuts. Ctrl/⌘ + K or / opens quick search anywhere; the rest only apply inside a concept and
+// never while typing in a field (arrow keys still move sliders when a slider has focus).
+window.addEventListener('keydown', (e) => {
+  const typing = e.target.closest?.('input, textarea, select, [contenteditable]');
+  if ((e.key === 'k' && (e.ctrlKey || e.metaKey)) || (e.key === '/' && !typing)) {
+    e.preventDefault();
+    openPalette();
+    return;
+  }
+  if (typing || e.ctrlKey || e.metaKey || e.altKey || !document.body.classList.contains('in-concept')) return;
+  const viewport = app.querySelector('.viewport');
+  if (e.key === 'ArrowRight') document.querySelector('[data-next]').click();
+  else if (e.key === 'ArrowLeft') document.querySelector('[data-prev]').click();
+  else if (e.key === 'r' || e.key === 'R') stageFor(viewport)?.resetView();
+  else if (e.key === 'f' || e.key === 'F') toggleFullscreen(viewport);
+  else if (e.key === '?') viewport.querySelector('.coach-reopen:not([hidden])')?.click();
+  else return;
+  e.preventDefault();
+});
+document.querySelector('[data-search-open]')?.addEventListener('click', openPalette);
 
 window.addEventListener('hashchange', render);
 window.addEventListener('concept-change', refreshChrome);

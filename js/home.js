@@ -4,6 +4,7 @@
 //  3. All concepts: searchable, filterable cards that tilt in 3D.
 import { CATALOG, SUBJECTS } from './catalog.js';
 import { buildSky } from './sky.js';
+import { progressFor, summary, resetProgress } from './progress.js';
 
 const TRY = ['sections', 'sorting', 'waves', 'structures/tree'];
 
@@ -45,6 +46,7 @@ export function mountHome(root) {
         <span class="pill-tag"><span class="dot"></span>All concepts</span>
         <h2>Pick a concept. <em>Learn it by moving it.</em></h2>
       </div>
+      <div class="progress-strip reveal" data-progress></div>
       <div class="catalog-tools reveal">
         <input type="search" placeholder="Filter concepts…" data-search aria-label="Filter concepts">
         <div class="chips" data-chips>
@@ -64,6 +66,8 @@ export function mountHome(root) {
   // With no search or filter, cards are grouped under a heading per subject; otherwise they form one grid.
   const cardHtml = (c, i) => {
     const s = SUBJECTS[c.subject];
+    const p = progressFor(c.path);
+    const badge = p.quiz && p.quiz === p.quizTotal ? '<span class="card-badge gold">★ Mastered</span>' : p.visited ? '<span class="card-badge">✓ Explored</span>' : '';
     return `
         <a class="card reveal" href="#/${c.path}" style="--c:${s.color}; --d:${(i % 4) * 0.06}s">
           <div class="card-top">
@@ -72,7 +76,7 @@ export function mountHome(root) {
           </div>
           <h2>${c.title}</h2>
           <p>${c.idea ?? c.blurb}</p>
-          <span class="go">Explore →</span>
+          <div class="card-foot"><span class="go">Explore →</span>${badge}</div>
         </a>`;
   };
   function renderCards() {
@@ -146,6 +150,23 @@ export function mountHome(root) {
     if (card && !card.contains(e.relatedTarget)) card.style.transform = '';
   });
 
+  // Progress across all concepts (stored in this browser only).
+  function renderProgress() {
+    const { visited, mastered } = summary(CATALOG.map((c) => c.path));
+    const pct = Math.round((visited / CATALOG.length) * 100);
+    $('[data-progress]').innerHTML = visited
+      ? `<div class="progress-text"><b>${visited}</b> of ${CATALOG.length} explored · <b>${mastered}</b> mastered <button class="link-btn" data-reset-progress>reset</button></div>
+         <div class="progress-bar"><span style="width:${pct}%"></span></div>`
+      : '<div class="progress-text">New here? Start anywhere. Each concept takes about 5 minutes, and ends with a 2-question check. Tip: press <kbd>Ctrl K</kbd> to jump to any concept.</div>';
+  }
+  $('[data-progress]').addEventListener('click', (e) => {
+    if (!e.target.closest('[data-reset-progress]')) return;
+    resetProgress();
+    renderProgress();
+    renderCards();
+  });
+
+  renderProgress();
   renderCards();
   scatterTiles($('[data-tiles]'));
 

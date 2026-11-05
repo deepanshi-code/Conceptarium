@@ -6,6 +6,6 @@
   "description": "Conceptarium: interactive 3D visualizations of engineering concepts: engineering drawing, mechanics, maths, graphics, ML and data structures.",
   "scripts": {
     "start": "python serve.py",
-    "test": "node --test tests/linalg.test.mjs tests/optim.test.mjs tests/ds.test.mjs tests/graph-hash.test.mjs tests/beam-fourier.test.mjs tests/new-concepts.test.mjs tests/more-concepts.test.mjs"
+    "test": "node --test tests/linalg.test.mjs tests/optim.test.mjs tests/ds.test.mjs tests/graph-hash.test.mjs tests/beam-fourier.test.mjs tests/new-concepts.test.mjs tests/more-concepts.test.mjs tests/round3.test.mjs"
   }
 }

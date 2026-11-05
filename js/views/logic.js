@@ -129,6 +129,7 @@ export function mountLogic(root) {
     const lastCol = Math.max(...c.gates.map((g) => g.col)) + 1;
     stage.camera.position.set(0, 0.8, 5.5 + lastCol * 2.9);
     stage.controls.target.set(0, 0, 0);
+    stage.saveHome(); // the toolbar's Reset view returns here
     root.querySelectorAll('[data-circuit]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.circuit === state.key)));
     $('[data-insight]').innerHTML = INSIGHT[state.key];
     renderTable();

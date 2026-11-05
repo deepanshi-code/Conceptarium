@@ -169,7 +169,7 @@ export function mountProjectile(root) {
   }));
   const bind = (sel, key, fmt) => $(sel).addEventListener('input', (e) => {
     state[key] = Number(e.target.value);
-    $(`${sel}-out`).textContent = fmt(state[key]);
+    $(sel.replace(']', '-out]')).textContent = fmt(state[key]);
     placeCannon();
   });
   bind('[data-angle]', 'angle', (v) => `${v}°`);

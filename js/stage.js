@@ -12,6 +12,10 @@ export const COLORS = {
   muted: 0x8892a6,
 };
 
+// Stages by container element, so shared UI (the view toolbar) can reach the stage of the current view.
+const registry = new WeakMap();
+export const stageFor = (container) => registry.get(container);
+
 export function createStage(container, { cameraPosition = [4, 3.5, 5], axisLength = 3.5, axes = true, grid = true } = {}) {
   const renderer = new THREE.WebGLRenderer({ antialias: true });
   // Start sharp; the frame loop steps the resolution down if this machine can't keep up (see below).
@@ -92,6 +96,10 @@ export function createStage(container, { cameraPosition = [4, 3.5, 5], axisLengt
   const visibility = new IntersectionObserver(([entry]) => { onScreen = entry.isIntersecting; });
   visibility.observe(container);
 
+  // "Home" camera pose for the Reset view button: whatever the view set up when it mounted.
+  let home = null;
+  let homeMove = null;
+
   const frameCallbacks = [];
   const clock = new THREE.Clock();
   let slowFrames = 0;
@@ -108,12 +116,19 @@ export function createStage(container, { cameraPosition = [4, 3.5, 5], axisLengt
       slowFrames = 0;
     }
     for (const fn of frameCallbacks) fn(dt);
+    if (homeMove) {
+      homeMove.k = Math.min(1, homeMove.k + dt * 1.6);
+      const e = homeMove.k * homeMove.k * (3 - 2 * homeMove.k);
+      camera.position.lerpVectors(homeMove.from, home.position, e);
+      controls.target.lerpVectors(homeMove.fromTarget, home.target, e);
+      if (homeMove.k === 1) homeMove = null;
+    }
     controls.update();
     renderer.render(scene, camera);
     labelRenderer.render(scene, camera);
   });
 
-  return {
+  const api = {
     scene,
     controls,
     container,
@@ -125,6 +140,17 @@ export function createStage(container, { cameraPosition = [4, 3.5, 5], axisLengt
       perspective.updateProjectionMatrix();
     },
     onFrame(fn) { frameCallbacks.push(fn); },
+    saveHome() {
+      home = { position: camera.position.clone(), target: controls.target.clone() };
+    },
+    resetView() {
+      if (home) homeMove = { from: camera.position.clone(), fromTarget: controls.target.clone(), k: 0 };
+    },
+    /** PNG of the current frame (3D only; HTML labels are not part of the canvas). */
+    snapshot() {
+      renderer.render(scene, camera);
+      return renderer.domElement.toDataURL('image/png');
+    },
     dispose() {
       renderer.setAnimationLoop(null);
       observer.disconnect();
@@ -139,6 +165,8 @@ export function createStage(container, { cameraPosition = [4, 3.5, 5], axisLengt
       container.replaceChildren();
     },
   };
+  registry.set(container, api);
+  return api;
 }
 
 function createAxes(length) {
