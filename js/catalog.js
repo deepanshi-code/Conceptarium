@@ -15,6 +15,9 @@ export const SUBJECTS = {
   net: { name: 'Computer Networks', color: '#a3e635' },
   chem: { name: 'Chemistry', color: '#2dd4bf' },
   bio: { name: 'Biology', color: '#86efac' },
+  elec: { name: 'Electrical Engineering', color: '#fcd34d' },
+  civil: { name: 'Civil Engineering', color: '#d6d3d1' },
+  ece: { name: 'Electronics & Communication', color: '#c084fc' },
 };
 
 export const CATALOG = [
@@ -59,6 +62,13 @@ export const CATALOG = [
     real: 'Bikes, cars, generators, pumps',
     blurb: 'Watch intake, compression, power and exhaust with valves and spark, and see why piston motion is not a pure sine.',
     steps: ['Watch the colours: <b>blue</b> intake, <b>orange</b> power after the spark.', 'Make the <b>Rod / crank</b> ratio small: the yellow curve gets lopsided.', 'Change the <b>crank radius</b>: the stroke is always 2r.'],
+  },
+  {
+    path: 'stressstrain', subject: 'mech', icon: '🔩', title: 'Stress–Strain (Tensile Test)',
+    idea: 'Pull a bar: it stretches elastically, then yields, then necks and breaks.',
+    real: 'Choosing steel for bridges, cables and bolts',
+    blurb: 'A specimen pulled to fracture while the stress–strain curve is drawn, for steel, aluminium, copper and cast iron.',
+    steps: ['Press <b>Pull</b> and watch the curve: elastic line, yield, necking, fracture.', 'Switch to <b>cast iron</b>: it snaps with almost no stretch (brittle).', 'Compare the <b>toughness</b> (area under the curve).'],
   },
   {
     path: 'fourier', subject: 'maths', icon: '🌀', title: 'Fourier Series',
@@ -360,6 +370,62 @@ export const CATALOG = [
     real: 'Digestion, washing powder, cheese making, fever',
     blurb: 'Amylase, pepsin and trypsin splitting substrates, with substrate, temperature and pH curves.',
     steps: ['Push the <b>temperature</b> to 60 °C: the enzyme denatures.', 'Pick <b>Pepsin</b> and try pH 2, then pH 7.', 'Add lots of <b>substrate</b>: the rate levels off.'],
+  },
+  {
+    path: 'circuits', subject: 'elec', icon: '🔌', title: 'DC Circuits',
+    idea: 'Voltage is height: the battery lifts charge up, resistors let it down. Current is the flow.',
+    real: 'House wiring, phone chargers, every gadget',
+    blurb: 'Series, parallel and mixed resistors drawn as a 3D voltage landscape, with Ohm’s and Kirchhoff’s laws.',
+    steps: ['Compare <b>Series</b> and <b>Parallel</b>: watch the dot speeds (current).', 'Change a resistor: see the voltage ramps change.', 'Check the table: drops add up to the battery voltage (KVL).'],
+  },
+  {
+    path: 'induction', subject: 'elec', icon: '🧲', title: 'Induction & Transformers',
+    idea: 'A changing magnetic field makes electricity. Transformers use it to change AC voltage.',
+    real: 'Power grids, generators, chargers, induction cooktops',
+    blurb: 'A magnet swinging through a coil moves a meter needle; a transformer steps AC voltage up or down by its turns ratio.',
+    steps: ['Watch the needle: it moves only while the magnet is <b>moving</b>.', 'Add more <b>turns</b>: bigger voltage.', 'Switch to <b>Transformer</b> and change Ns: step-up vs step-down.'],
+  },
+  {
+    path: 'threephase', subject: 'elec', icon: '🌀', title: 'Three-Phase & Motors',
+    idea: 'Three AC currents 120° apart add up to a magnetic field that spins on its own.',
+    real: 'Factory motors, pumps, fans, the power grid',
+    blurb: 'Three stator coils, their pulsing fields, the rotating resultant, and an induction motor rotor chasing it.',
+    steps: ['Watch the white arrow: same length, always turning.', 'Untick one <b>phase</b>: the field wobbles. Untick two: it only pulses.', 'Notice the rotor lags the field slightly (slip).'],
+  },
+  {
+    path: 'pid', subject: 'elec', icon: '🛸', title: 'PID Control',
+    idea: 'Measure the error, then push: P for now, I for the past, D for the future.',
+    real: 'Drones, cruise control, ovens, robot arms',
+    blurb: 'Tune Kp, Ki and Kd for a drone climbing to a target height, with a live response graph.',
+    steps: ['Try <b>P only</b>: it bounces and stays too low.', 'Try <b>PID (tuned)</b>, then press <b>Gust of wind</b>.', '<b>Drag the green ring</b> to set a new target height.'],
+  },
+  {
+    path: 'truss', subject: 'civil', icon: '🌉', title: 'Truss Bridge',
+    idea: 'Triangles can’t change shape, so every truss member is just pulled or pushed.',
+    real: 'Railway bridges, roofs, cranes, towers',
+    blurb: 'A Pratt truss bridge with members coloured by tension or compression, and a truck you can drag across.',
+    steps: ['<b>Drag the truck</b> along the deck and watch the forces shift.', 'Make the truss <b>taller</b>: chord forces drop.', '<b>Click a member</b> to read its force.'],
+  },
+  {
+    path: 'fluid', subject: 'civil', icon: '💧', title: 'Fluid Flow: Venturi',
+    idea: 'Squeeze a pipe and the water speeds up. Faster water has lower pressure.',
+    real: 'Flow meters, carburettors, water supply, spray guns',
+    blurb: 'Continuity and Bernoulli in a Venturi tube, with flowing particles and manometer columns.',
+    steps: ['Make the <b>throat</b> narrower: particles race through it.', 'Watch the right tube drop: lower pressure in the throat.', 'Raise the <b>flow rate</b> until the pressure goes off the scale.'],
+  },
+  {
+    path: 'sampling', subject: 'ece', icon: '🎞️', title: 'Sampling & Aliasing',
+    idea: 'Sample a signal too slowly and you see a fake, slower one. Sample faster than 2f.',
+    real: 'Digital audio, video cameras, ADCs, 5G',
+    blurb: 'A wheel filmed by a camera, and a sine wave sampled at fs: aliasing, the Nyquist rate and the wagon-wheel effect.',
+    steps: ['Press <b>Backwards wheel</b>: it seems to spin the wrong way.', 'Press <b>Frozen</b>: why does it stop?', 'Raise fs above 2f: the samples follow the real wave.'],
+  },
+  {
+    path: 'diode', subject: 'ece', icon: '🔺', title: 'PN Junction Diode',
+    idea: 'A diode is a one-way valve for current: forward it conducts, reverse it blocks.',
+    real: 'Chargers (rectifiers), LEDs, solar cells, protection circuits',
+    blurb: 'Holes, electrons and the depletion region under forward and reverse bias, with the exponential I–V curve.',
+    steps: ['Try <b>Reverse −3 V</b>: the depletion region widens.', 'Slide to <b>0.75 V</b>: current floods across.', 'Watch the I–V curve: almost nothing, then a sudden rise.'],
   },
 ];
 

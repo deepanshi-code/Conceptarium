@@ -56,6 +56,15 @@ Text is kept short on purpose. Each concept opens with a one-line idea and where
 | **Enzymes** | Biology | Amylase, pepsin and trypsin turning substrate into products; rate against substrate (Michaelis–Menten), temperature and pH, with denaturing. |
 | **Reaction Rates** | Chemistry | Colliding particles that react above Ea, a Maxwell–Boltzmann curve with the reacting share shaded, an energy profile, and a catalyst. |
 | **Acids, Bases & pH** | Chemistry | Strong vs weak acids and bases with universal-indicator colours and a pH meter, plus an HCl–NaOH titration with phenolphthalein and the live curve. |
+| **DC Circuits** | Electrical | Series, parallel and mixed resistors as a 3D voltage landscape (height = potential), current dots, and a table checking Ohm's and Kirchhoff's laws. |
+| **Induction & Transformers** | Electrical | A magnet swinging through a coil drives a meter needle and an emf trace (Faraday, Lenz); a transformer with turns sliders, circulating core flux and Vp / Vs waves. |
+| **Three-Phase & Motors** | Electrical | Three coils 120° apart, each phase's field arrow, the constant-strength rotating resultant, a squirrel-cage rotor with slip, and what happens when phases drop out. |
+| **PID Control** | Electrical / control | A drone climbing to a draggable target under P, PI, PD or PID control, with gusts, a live response graph, overshoot, settling time and steady-state error. |
+| **Truss Bridge** | Civil | A Pratt truss solved by the method of joints; members coloured and sized by tension or compression as you drag a truck along the deck. |
+| **Fluid Flow: Venturi** | Civil / mechanical | Continuity and Bernoulli in a Venturi tube, with particles that speed up in the throat and manometer columns showing the pressure drop. |
+| **Stress–Strain (Tensile Test)** | Mechanical | A specimen pulled to fracture (with necking) while the curve is drawn; steel, aluminium, copper and cast iron with E, yield, UTS and toughness. |
+| **Sampling & Aliasing** | Electronics & communication | A wheel filmed at fs and a sampled sine: aliasing, the Nyquist rate, frozen and backwards wheels. |
+| **PN Junction Diode** | Electronics & communication | Holes, electrons and the depletion region under forward and reverse bias, with the Shockley I–V curve. |
 
 ## Run locally
 
@@ -111,6 +120,10 @@ js/chem/periodic.js, bonding.js, gas.js, electrochem.js   element data, bond typ
 js/bio/heart.js, cellcycle.js, replication.js, neuron.js  circulation route, mitosis stages, replication, action potential
 js/bio/processes.js        photosynthesis, breathing, meiosis and enzyme models
 js/chem/kinetics.js, acidbase.js   Arrhenius / Maxwell–Boltzmann, pH and titration
+js/elec/circuits.js, machines.js, pid.js   resistor networks, induction / transformer / three-phase, PID drone
+js/civil/truss.js, fluid.js        method-of-joints solver (Gaussian elimination), Venturi flow
+js/mech/material.js                stress–strain curves and toughness
+js/ece/signals.js                  aliasing, Shockley diode, depletion width
 js/views/orbitals.js, vsepr.js, crystal.js, gears.js, engine.js, dna.js, cell.js
 js/ds/brackets.js      balanced-bracket check with a stack
 js/algo/sort.js     sorting algorithms that record every step

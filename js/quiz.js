@@ -200,6 +200,42 @@ const Q = {
     ['A solution has pH 3. Compared with pH 5, its [H⁺] is…', ['2 times higher', '100 times higher', '2 times lower'], 1, 'Each pH step is ×10, so 2 steps = ×100.'],
     ['0.1 M acetic acid has a higher pH than 0.1 M HCl because acetic acid is…', ['More concentrated', 'A weak acid (only partly ionised)', 'A base'], 1, 'Fewer molecules release H⁺, so [H⁺] is lower and the pH higher (about 2.9 vs 1).'],
   ],
+  circuits: [
+    ['Three resistors of 2 Ω, 4 Ω and 6 Ω in series across 12 V. The current is…', ['1 A', '2 A', '6 A'], 0, 'R = 2 + 4 + 6 = 12 Ω, so I = V / R = 12 / 12 = 1 A.'],
+    ['Adding another resistor in parallel makes the total resistance…', ['Bigger', 'Smaller', 'Unchanged'], 1, 'Each new branch is one more path for current, so the circuit passes more current for the same voltage.'],
+  ],
+  induction: [
+    ['A magnet rests inside a coil without moving. The induced voltage is…', ['Large', 'Zero', 'Reversed'], 1, 'Faraday: only a changing flux induces a voltage.'],
+    ['A transformer has 1000 primary and 50 secondary turns on 230 V AC. The output is about…', ['11.5 V', '4600 V', '230 V'], 0, 'Vs = Vp × Ns / Np = 230 × 50 / 1000 = 11.5 V (step-down).'],
+  ],
+  threephase: [
+    ['In a three-phase supply, the phases are shifted from each other by…', ['90°', '120°', '180°'], 1, '360° / 3 = 120°.'],
+    ['Why does an induction motor’s rotor turn a little slower than the field (slip)?', ['Friction only', 'If it matched, no current would be induced in the rotor', 'To save energy'], 1, 'Induction needs relative motion between field and rotor bars.'],
+  ],
+  pid: [
+    ['A drone with only P control hovers below its target. Which term fixes this?', ['D', 'I', 'Neither'], 1, 'The integral grows while the error lasts, until it supplies the thrust gravity needs.'],
+    ['Increasing Kd mainly…', ['Removes steady error', 'Damps overshoot and oscillation', 'Makes it faster to start'], 1, 'D reacts to how fast the error changes, like a brake.'],
+  ],
+  truss: [
+    ['Under its own weight, the bottom chord of a simple truss bridge is in…', ['Compression', 'Tension', 'No force'], 1, 'Like the bottom of a sagging beam, it is stretched.'],
+    ['Why are trusses built from triangles?', ['They look good', 'A triangle cannot change shape without changing a side length', 'They use less paint'], 1, 'So members carry only axial push or pull, not bending.'],
+  ],
+  fluid: [
+    ['Water flows from a pipe into a section with half the diameter. Its speed becomes…', ['2×', '4×', 'Half'], 1, 'Area ∝ d², so a quarter of the area means 4× the speed (A₁v₁ = A₂v₂).'],
+    ['Where the flow is fastest, the pressure is…', ['Highest', 'Lowest', 'The same'], 1, 'Bernoulli: p + ½ρv² is constant along the flow.'],
+  ],
+  stressstrain: [
+    ['In the elastic region, stress divided by strain equals…', ["Young's modulus E", 'Yield strength', 'Toughness'], 0, "Hooke's law: σ = E ε."],
+    ['A material that breaks with very little stretching is called…', ['Ductile', 'Brittle', 'Elastic'], 1, 'Like cast iron or glass: no necking, no warning.'],
+  ],
+  sampling: [
+    ['To capture a 20 kHz sound without aliasing, you must sample at more than…', ['10 kHz', '20 kHz', '40 kHz'], 2, 'Nyquist: more than twice the highest frequency. CDs use 44.1 kHz.'],
+    ['A 7 Hz signal sampled at 10 Hz looks like…', ['7 Hz', '3 Hz', '17 Hz'], 1, 'It aliases to |7 − 10| = 3 Hz.'],
+  ],
+  diode: [
+    ['A silicon diode starts conducting strongly at about…', ['0.07 V', '0.7 V', '7 V'], 1, 'About 0.6–0.7 V forward; germanium is about 0.3 V.'],
+    ['Under reverse bias, the depletion region…', ['Gets wider', 'Disappears', 'Stays the same'], 0, 'Carriers are pulled away from the junction, so only a tiny leakage current flows.'],
+  ],
 };
 
 export const hasQuiz = (path) => Boolean(Q[path]);

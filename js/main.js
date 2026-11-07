@@ -43,6 +43,15 @@ import { mountMeiosis } from './views/meiosis.js';
 import { mountEnzymes } from './views/enzymes.js';
 import { mountRates } from './views/rates.js';
 import { mountAcidBase } from './views/acidbase.js';
+import { mountCircuits } from './views/circuits.js';
+import { mountInduction } from './views/induction.js';
+import { mountThreePhase } from './views/threephase.js';
+import { mountTruss } from './views/truss.js';
+import { mountFluid } from './views/fluid.js';
+import { mountStressStrain } from './views/stressstrain.js';
+import { mountPid } from './views/pid.js';
+import { mountSampling } from './views/sampling.js';
+import { mountDiode } from './views/diode.js';
 import { mountHome } from './home.js';
 import { showCoach } from './coach.js';
 import { attachToolbar, toggleFullscreen } from './toolbar.js';
@@ -97,6 +106,15 @@ const VIEWS = {
   enzymes: mountEnzymes,
   rates: mountRates,
   acidbase: mountAcidBase,
+  circuits: mountCircuits,
+  induction: mountInduction,
+  threephase: mountThreePhase,
+  truss: mountTruss,
+  fluid: mountFluid,
+  stressstrain: mountStressStrain,
+  pid: mountPid,
+  sampling: mountSampling,
+  diode: mountDiode,
 };
 
 const app = document.getElementById('app');
