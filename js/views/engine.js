@@ -78,7 +78,12 @@ export function mountEngine(root) {
     spark.position.set(0, top + 0.72, 0);
 
     // Graph lines (rebuilt): real piston motion (yellow) vs simple harmonic (dashed).
-    graph.children.filter((c) => c !== pen).forEach((c) => { graph.remove(c); c.geometry.dispose(); c.material.dispose(); });
+    graph.children.filter((c) => c !== pen).forEach((c) => {
+      graph.remove(c);
+      c.geometry?.dispose();
+      c.material?.dispose();
+      if (c.isCSS2DObject) c.element.remove(); // labels have no geometry; drop their HTML too
+    });
     const N = 120;
     const yOf = (x) => (x - l) * 1.2 + 2.4;
     const real = Array.from({ length: N + 1 }, (_, i) => new THREE.Vector3(GRAPH_X + (i / N) * GRAPH_W, yOf(pistonX((i / N) * 2 * Math.PI, r, l)), 0));

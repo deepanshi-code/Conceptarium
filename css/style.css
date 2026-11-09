@@ -796,3 +796,25 @@ kbd { font: 600 10px/1 var(--font-mono); padding: 3px 5px; border-radius: 5px; b
 .ph-scale { position: relative; height: 14px; margin: 4px 0 12px; border-radius: 999px; background: linear-gradient(90deg, #dc2626, #f97316 21%, #facc15 36%, #22c55e 50%, #0ea5e9 64%, #4338ca 79%, #7e22ce); }
 .ph-scale i { position: absolute; top: -4px; width: 4px; height: 22px; margin-left: -2px; border-radius: 2px; background: #fff; box-shadow: 0 0 6px #fff; transition: left 0.3s; }
 .timing .tlabel.q { fill: #4ade80; }
+
+/* --- Practice problems ------------------------------------------------------ */
+.practice { margin-top: 26px; padding: 14px; border-radius: 14px; border: 1px solid rgba(250, 204, 21, 0.3); background: rgba(250, 204, 21, 0.05); }
+.practice h3 { margin-top: 0; color: #facc15; }
+.pq { line-height: 1.55; margin-bottom: 10px; }
+.pq .mini { margin-top: 8px; border-collapse: collapse; font: 12px var(--font-mono); }
+.pq .mini th, .pq .mini td { padding: 3px 8px; border: 1px solid var(--border); text-align: center; }
+.answer-row { display: flex; gap: 8px; align-items: center; }
+.answer-row input { flex: 1; min-width: 0; padding: 9px 10px; font: 600 14px var(--font-mono); }
+.answer-row .unit { color: var(--muted); font: 12px var(--font-mono); white-space: nowrap; }
+.feedback { margin: 8px 0 0; min-height: 1em; font-size: 13px; color: var(--muted); }
+.feedback.right { color: var(--ok); font-weight: 600; }
+.feedback.wrong { color: var(--danger); }
+.steps { margin: 8px 0 0; padding-left: 22px; line-height: 1.6; font-size: 13px; }
+.steps li { margin-bottom: 6px; animation: view-in 0.3s ease-out; }
+.practice-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.practice-actions .btn { margin-top: 0; }
+.course-line { display: block; margin-top: 4px; }
+.catalog-tools select { padding: 11px 12px; border-radius: 12px; }
+.practice-only { margin: 0; }
+.card-badge.practice { color: #facc15; background: rgba(250, 204, 21, 0.1); margin-left: auto; }
+.card-foot { gap: 6px; flex-wrap: wrap; }

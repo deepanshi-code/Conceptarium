@@ -6,6 +6,10 @@ Interactive 3D visualizations of engineering concepts that are hard to understan
 
 The landing page has a northern-lights hero with a 3D planet horizon, a "concept sky" where each subject is a constellation of clickable stars, and a searchable catalog of 3D-tilting cards. Inside each concept you can drag and click the 3D objects directly.
 
+**Exam practice:** 34 concepts (beams, circuits, projectiles, gas laws, cells, scheduling, paging, pH, sorting, binary search, Hanoi, postfix evaluation, BST height, crystal density, unpaired electrons, Arrhenius, SHM, Fourier, gradient descent, gears, engines, stress and elongation, trusses, Venturi, transformers, three-phase power, PID, aliasing, cardiac output, ventilation, Michaelis–Menten, mitosis, meiosis, protein length) each have a **practice problem** with fresh numbers every time, an answer box (with a stated tolerance), a worked solution revealed one step at a time, and **Load into the model**, which sets the 3D model to the problem's values. Answers are computed by the same solvers that drive the models (`js/practice/problems.js`), and tests check them against independent calculations.
+
+**Study by course:** concepts are mapped to common B.Tech / BCA course names (`js/courses.js`), shown on each concept and selectable on the home page. These are generic names, not a particular university's course codes; add your own there.
+
 **Built-in help for students:** every concept ends with a two-question "Check yourself" quiz that explains each answer; the home page tracks what you have explored and mastered (stored only in your browser); <kbd>Ctrl K</kbd> or <kbd>/</kbd> opens quick search; each 3D view has Reset view (<kbd>R</kbd>), Fullscreen (<kbd>F</kbd>) and Screenshot buttons; <kbd>←</kbd> <kbd>→</kbd> move between concepts.
 
 Text is kept short on purpose. Each concept opens with a one-line idea and where you meet it in real life; the longer explanation is folded under "Explain more", and a one-line "Try 1/3" strip suggests what to do next.
@@ -113,6 +117,8 @@ js/quiz.js             "Check yourself" questions for every concept
 js/progress.js         explored / mastered progress (localStorage)
 js/palette.js          Ctrl K quick search
 js/toolbar.js          reset view, fullscreen, screenshot
+js/practice.js, js/practice/problems.js, more.js   practice problems: generators, checking, worked steps, load into model
+js/courses.js          concept → course mapping
 js/chem/orbitals.js, vsepr.js, crystal.js   electron configuration, VSEPR geometry, unit cells
 js/mech/gears.js, slidercrank.js            gear trains, piston kinematics, four-stroke timing
 js/bio/dna.js                               genetic code, transcription, translation, mutations

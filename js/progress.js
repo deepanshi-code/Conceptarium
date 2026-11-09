@@ -34,11 +34,21 @@ export function recordQuiz(path, score, total) {
   save(data);
 }
 
+/** Count one more solved practice problem for a concept; returns the new total. */
+export function recordPractice(path) {
+  const data = load();
+  const total = (data[path]?.practice ?? 0) + 1;
+  data[path] = { ...data[path], visited: true, practice: total };
+  save(data);
+  return total;
+}
+
 export function summary(paths) {
   const data = load();
   return {
     visited: paths.filter((p) => data[p]?.visited).length,
     mastered: paths.filter((p) => data[p]?.quiz && data[p].quiz === data[p].quizTotal).length,
+    solved: paths.reduce((n, p) => n + (data[p]?.practice ?? 0), 0),
   };
 }
 

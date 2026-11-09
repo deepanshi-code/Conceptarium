@@ -5,6 +5,8 @@
 import { CATALOG, SUBJECTS } from './catalog.js';
 import { buildSky } from './sky.js';
 import { progressFor, summary, resetProgress } from './progress.js';
+import { COURSES } from './courses.js';
+import { hasPractice } from './practice.js';
 
 const TRY = ['sections', 'sorting', 'waves', 'structures/tree'];
 
@@ -49,6 +51,11 @@ export function mountHome(root) {
       <div class="progress-strip reveal" data-progress></div>
       <div class="catalog-tools reveal">
         <input type="search" placeholder="Filter concepts…" data-search aria-label="Filter concepts">
+        <select data-course aria-label="Study by course">
+          <option value="">📘 Study by course: all</option>
+          ${Object.keys(COURSES).map((c) => `<option>${c}</option>`).join('')}
+        </select>
+        <label class="check practice-only"><input type="checkbox" data-practice> ✎ Has practice problems</label>
         <div class="chips" data-chips>
           <button class="chip active" data-subject="">All</button>
           ${Object.entries(SUBJECTS).map(([key, s]) => `<button class="chip" data-subject="${key}" style="--c:${s.color}">${s.name}</button>`).join('')}
@@ -60,7 +67,7 @@ export function mountHome(root) {
   `;
 
   const $ = (sel) => root.querySelector(sel);
-  const state = { query: '', subject: '' };
+  const state = { query: '', subject: '', course: '', practice: false };
 
   // --- Cards -------------------------------------------------------------
   // With no search or filter, cards are grouped under a heading per subject; otherwise they form one grid.
@@ -76,14 +83,16 @@ export function mountHome(root) {
           </div>
           <h2>${c.title}</h2>
           <p>${c.idea ?? c.blurb}</p>
-          <div class="card-foot"><span class="go">Explore →</span>${badge}</div>
+          <div class="card-foot"><span class="go">Explore →</span>${hasPractice(c.path) ? '<span class="card-badge practice">✎ Practice</span>' : ''}${badge}</div>
         </a>`;
   };
   function renderCards() {
     const q = state.query.trim().toLowerCase();
     const list = CATALOG.filter((c) => (!state.subject || c.subject === state.subject)
+      && (!state.course || COURSES[state.course].includes(c.path))
+      && (!state.practice || hasPractice(c.path))
       && (!q || `${c.title} ${c.idea} ${c.blurb} ${c.real} ${SUBJECTS[c.subject].name}`.toLowerCase().includes(q)));
-    const grouped = !q && !state.subject;
+    const grouped = !q && !state.subject && !state.course && !state.practice;
     $('[data-cards]').innerHTML = grouped
       ? Object.entries(SUBJECTS).map(([key, s]) => {
         const members = list.filter((c) => c.subject === key);
@@ -108,6 +117,8 @@ export function mountHome(root) {
   }, { root, threshold: 0.12 });
   root.querySelectorAll('.reveal').forEach((el) => revealer.observe(el));
 
+  $('[data-course]').addEventListener('change', (e) => { state.course = e.target.value; renderCards(); });
+  $('[data-practice]').addEventListener('change', (e) => { state.practice = e.target.checked; renderCards(); });
   $('[data-search]').addEventListener('input', (e) => {
     state.query = e.target.value;
     renderCards();
@@ -152,10 +163,10 @@ export function mountHome(root) {
 
   // Progress across all concepts (stored in this browser only).
   function renderProgress() {
-    const { visited, mastered } = summary(CATALOG.map((c) => c.path));
+    const { visited, mastered, solved } = summary(CATALOG.map((c) => c.path));
     const pct = Math.round((visited / CATALOG.length) * 100);
     $('[data-progress]').innerHTML = visited
-      ? `<div class="progress-text"><b>${visited}</b> of ${CATALOG.length} explored · <b>${mastered}</b> mastered <button class="link-btn" data-reset-progress>reset</button></div>
+      ? `<div class="progress-text"><b>${visited}</b> of ${CATALOG.length} explored · <b>${mastered}</b> mastered · <b>${solved}</b> problems solved <button class="link-btn" data-reset-progress>reset</button></div>
          <div class="progress-bar"><span style="width:${pct}%"></span></div>`
       : '<div class="progress-text">New here? Start anywhere. Each concept takes about 5 minutes, and ends with a 2-question check. Tip: press <kbd>Ctrl K</kbd> to jump to any concept.</div>';
   }

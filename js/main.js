@@ -56,6 +56,8 @@ import { mountHome } from './home.js';
 import { showCoach } from './coach.js';
 import { attachToolbar, toggleFullscreen } from './toolbar.js';
 import { renderQuiz } from './quiz.js';
+import { renderPractice } from './practice.js';
+import { coursesFor } from './courses.js';
 import { markVisited } from './progress.js';
 import { openPalette } from './palette.js';
 import { stageFor } from './stage.js';
@@ -164,7 +166,10 @@ function refreshChrome() {
   }
   const panel = app.querySelector('.panel');
   simplifyPanel(panel, concept);
-  if (panel) renderQuiz(panel, concept);
+  if (panel) {
+    renderQuiz(panel, concept);
+    renderPractice(panel, concept, app);
+  }
   markVisited(concept.path);
 }
 
@@ -188,7 +193,9 @@ function simplifyPanel(panel, concept) {
       panel.querySelector('h2').after(idea);
     }
   }
-  idea.innerHTML = `<p>${concept.idea}</p><small><span aria-hidden="true">🌍</span> Used in: ${concept.real}</small>`;
+  const courses = coursesFor(concept.path);
+  idea.innerHTML = `<p>${concept.idea}</p><small><span aria-hidden="true">🌍</span> Used in: ${concept.real}</small>`
+    + (courses.length ? `<small class="course-line"><span aria-hidden="true">📘</span> Course: ${courses.join(', ')}</small>` : '');
 }
 
 // Long hints are clamped to two lines in CSS; a click shows the rest.
