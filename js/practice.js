@@ -1,12 +1,13 @@
 // "Practice problem" card in a concept panel: a fresh numerical problem, an answer box that checks within the
 // stated tolerance, a worked solution revealed one step at a time, and a button that loads the numbers into the
 // 3D model so students can see the situation they are calculating.
-import { GENERATORS, checkAnswer } from './practice/problems.js';
+import { GENERATORS, checkAnswer, seeded } from './practice/problems.js';
 import { recordPractice, progressFor } from './progress.js';
 
 export const hasPractice = (path) => Boolean(GENERATORS[path]);
 
-export function renderPractice(panel, concept, viewRoot) {
+// `seed` (from a shared link) reproduces a specific problem; otherwise a random one is made.
+export function renderPractice(panel, concept, viewRoot, seed) {
   panel.querySelector('.practice')?.remove();
   const gen = GENERATORS[concept.path];
   if (!gen) return;
@@ -21,8 +22,10 @@ export function renderPractice(panel, concept, viewRoot) {
   let shown = 0;
   let solved = false;
 
-  function newProblem() {
-    problem = gen(Math.random);
+  function newProblem(fromSeed) {
+    const s = fromSeed ?? 1 + Math.floor(Math.random() * 999999);
+    problem = gen(seeded(s));
+    section.dataset.seed = s; // shareLink() puts this in the URL
     shown = 0;
     solved = false;
     const done = progressFor(concept.path).practice ?? 0;
@@ -101,5 +104,5 @@ export function renderPractice(panel, concept, viewRoot) {
     if (e.target.closest('[data-new]')) newProblem();
   });
 
-  newProblem();
+  newProblem(seed);
 }

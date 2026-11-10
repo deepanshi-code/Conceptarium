@@ -238,6 +238,16 @@ const Q = {
   ],
 };
 
+// Options appear in a new order each time, so the right answer isn't learned by position.
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
 export const hasQuiz = (path) => Boolean(Q[path]);
 
 /** Adds (or refreshes) the quiz section at the bottom of a concept panel. */
@@ -254,7 +264,7 @@ export function renderQuiz(panel, concept) {
     ${questions.map(([q, options], i) => `
       <div class="quiz-q" data-q="${i}">
         <p>${i + 1}. ${q}</p>
-        <div class="quiz-options">${options.map((o, k) => `<button data-k="${k}">${o}</button>`).join('')}</div>
+        <div class="quiz-options">${shuffle(options.map((o, k) => [o, k])).map(([o, k]) => `<button data-k="${k}">${o}</button>`).join('')}</div>
         <p class="quiz-why" hidden></p>
       </div>`).join('')}
     <p class="quiz-score" hidden></p>`;

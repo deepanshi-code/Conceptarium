@@ -10,6 +10,10 @@ The landing page has a northern-lights hero with a 3D planet horizon, a "concept
 
 **Study by course:** concepts are mapped to common B.Tech / BCA course names (`js/courses.js`), shown on each concept and selectable on the home page. These are generic names, not a particular university's course codes; add your own there.
 
+**Share and report:** the 🔗 button in each 3D view copies a link that reopens the concept with the same settings and the same practice problem (e.g. `#/circuits?t.layout=parallel&r.1=9&p=762211`), so a teacher can give a whole class one problem. Every concept ends with **"Spotted a mistake? Report it"**, which opens a pre-filled GitHub issue containing that link.
+
+**Fast and robust:** each concept's code is downloaded only when it is opened (the home page loads none of them). If a device can't run WebGL, or a concept fails to load or crashes, a clear message with a report link replaces the blank page.
+
 **Built-in help for students:** every concept ends with a two-question "Check yourself" quiz that explains each answer; the home page tracks what you have explored and mastered (stored only in your browser); <kbd>Ctrl K</kbd> or <kbd>/</kbd> opens quick search; each 3D view has Reset view (<kbd>R</kbd>), Fullscreen (<kbd>F</kbd>) and Screenshot buttons; <kbd>←</kbd> <kbd>→</kbd> move between concepts.
 
 Text is kept short on purpose. Each concept opens with a one-line idea and where you meet it in real life; the longer explanation is folded under "Explain more", and a one-line "Try 1/3" strip suggests what to do next.
@@ -82,6 +86,8 @@ Then open http://localhost:5173. `serve.py` is Python's built-in server plus "do
 
 ## Tests
 
+GitHub Actions (`.github/workflows/test.yml`) runs a syntax check of every module and the full test suite on every push and pull request.
+
 The eigen-solver (`js/linalg.js`), the optimizers (`js/optim.js`), the data structures (`js/ds/*.js`), the beam solver (`js/mech/beam.js`), the Fourier series (`js/maths/fourier.js`), the sorts, the CPU schedulers and the field solver have no dependencies and are unit-tested with Node's built-in test runner:
 
 ```bash
@@ -119,6 +125,7 @@ js/palette.js          Ctrl K quick search
 js/toolbar.js          reset view, fullscreen, screenshot
 js/practice.js, js/practice/problems.js, more.js   practice problems: generators, checking, worked steps, load into model
 js/courses.js          concept → course mapping
+js/share.js            shareable links (settings + practice seed) and report-a-mistake links
 js/chem/orbitals.js, vsepr.js, crystal.js   electron configuration, VSEPR geometry, unit cells
 js/mech/gears.js, slidercrank.js            gear trains, piston kinematics, four-stroke timing
 js/bio/dna.js                               genetic code, transcription, translation, mutations

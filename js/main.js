@@ -1,57 +1,5 @@
-// Hash router. Routes look like #/drawing or #/structures/heap; each view mounts into #app and returns a cleanup.
-import { mountEigen } from './views/eigen.js';
-import { mountTransforms } from './views/transforms.js';
-import { mountDescent } from './views/descent.js';
-import { mountStructures } from './views/structures.js';
-import { mountDrawing } from './views/drawing.js';
-import { mountDevelopment } from './views/development.js';
-import { mountBeam } from './views/beam.js';
-import { mountFourier } from './views/fourier.js';
-import { mountSections } from './views/sections.js';
-import { mountSorting } from './views/sorting.js';
-import { mountScheduling } from './views/scheduling.js';
-import { mountEfield } from './views/efield.js';
-import { mountWaves } from './views/waves.js';
-import { mountProjectile } from './views/projectile.js';
-import { mountLogic } from './views/logic.js';
-import { mountSequential } from './views/sequential.js';
-import { mountHanoi } from './views/hanoi.js';
-import { mountStackQueue } from './views/stackqueue.js';
-import { mountNetwork } from './views/network.js';
-import { mountSearch } from './views/search.js';
-import { mountShm } from './views/shm.js';
-import { mountPerceptron } from './views/perceptron.js';
-import { mountPaging } from './views/paging.js';
-import { mountOrbitals } from './views/orbitals.js';
-import { mountVsepr } from './views/vsepr.js';
-import { mountCrystal } from './views/crystal.js';
-import { mountGears } from './views/gears.js';
-import { mountEngine } from './views/engine.js';
-import { mountDna } from './views/dna.js';
-import { mountCell } from './views/cell.js';
-import { mountHeart } from './views/heart.js';
-import { mountMitosis } from './views/mitosis.js';
-import { mountReplication } from './views/replication.js';
-import { mountNeuron } from './views/neuron.js';
-import { mountPeriodic } from './views/periodic.js';
-import { mountBonding } from './views/bonding.js';
-import { mountGasLaws } from './views/gaslaws.js';
-import { mountGalvanic } from './views/galvanic.js';
-import { mountPhotosynthesis } from './views/photosynthesis.js';
-import { mountBreathing } from './views/breathing.js';
-import { mountMeiosis } from './views/meiosis.js';
-import { mountEnzymes } from './views/enzymes.js';
-import { mountRates } from './views/rates.js';
-import { mountAcidBase } from './views/acidbase.js';
-import { mountCircuits } from './views/circuits.js';
-import { mountInduction } from './views/induction.js';
-import { mountThreePhase } from './views/threephase.js';
-import { mountTruss } from './views/truss.js';
-import { mountFluid } from './views/fluid.js';
-import { mountStressStrain } from './views/stressstrain.js';
-import { mountPid } from './views/pid.js';
-import { mountSampling } from './views/sampling.js';
-import { mountDiode } from './views/diode.js';
+// Hash router. Routes look like #/drawing or #/structures/heap (optionally ?settings, see share.js); each view
+// mounts into #app and returns a cleanup. A view's code is only downloaded when it is first opened.
 import { mountHome } from './home.js';
 import { showCoach } from './coach.js';
 import { attachToolbar, toggleFullscreen } from './toolbar.js';
@@ -62,83 +10,152 @@ import { markVisited } from './progress.js';
 import { openPalette } from './palette.js';
 import { stageFor } from './stage.js';
 import { CATALOG, SUBJECTS, findByPath } from './catalog.js';
+import { parseHash, applyState, shareLink, reportLink } from './share.js';
 
-const VIEWS = {
-  eigen: mountEigen,
-  transforms: mountTransforms,
-  descent: mountDescent,
-  structures: mountStructures,
-  drawing: mountDrawing,
-  development: mountDevelopment,
-  beam: mountBeam,
-  fourier: mountFourier,
-  sections: mountSections,
-  sorting: mountSorting,
-  scheduling: mountScheduling,
-  efield: mountEfield,
-  waves: mountWaves,
-  projectile: mountProjectile,
-  logic: mountLogic,
-  sequential: mountSequential,
-  hanoi: mountHanoi,
-  stackqueue: mountStackQueue,
-  network: mountNetwork,
-  search: mountSearch,
-  shm: mountShm,
-  perceptron: mountPerceptron,
-  paging: mountPaging,
-  orbitals: mountOrbitals,
-  vsepr: mountVsepr,
-  crystal: mountCrystal,
-  gears: mountGears,
-  engine: mountEngine,
-  dna: mountDna,
-  cell: mountCell,
-  heart: mountHeart,
-  mitosis: mountMitosis,
-  replication: mountReplication,
-  neuron: mountNeuron,
-  periodic: mountPeriodic,
-  bonding: mountBonding,
-  gaslaws: mountGasLaws,
-  galvanic: mountGalvanic,
-  photosynthesis: mountPhotosynthesis,
-  breathing: mountBreathing,
-  meiosis: mountMeiosis,
-  enzymes: mountEnzymes,
-  rates: mountRates,
-  acidbase: mountAcidBase,
-  circuits: mountCircuits,
-  induction: mountInduction,
-  threephase: mountThreePhase,
-  truss: mountTruss,
-  fluid: mountFluid,
-  stressstrain: mountStressStrain,
-  pid: mountPid,
-  sampling: mountSampling,
-  diode: mountDiode,
-};
+// Routes are file names in js/views/; each file exports one mountXxx(root, arg) function.
+const ROUTES = new Set([
+  'eigen',
+  'transforms',
+  'descent',
+  'structures',
+  'drawing',
+  'development',
+  'beam',
+  'fourier',
+  'sections',
+  'sorting',
+  'scheduling',
+  'efield',
+  'waves',
+  'projectile',
+  'logic',
+  'sequential',
+  'hanoi',
+  'stackqueue',
+  'network',
+  'search',
+  'shm',
+  'perceptron',
+  'paging',
+  'orbitals',
+  'vsepr',
+  'crystal',
+  'gears',
+  'engine',
+  'dna',
+  'cell',
+  'heart',
+  'mitosis',
+  'replication',
+  'neuron',
+  'periodic',
+  'bonding',
+  'gaslaws',
+  'galvanic',
+  'photosynthesis',
+  'breathing',
+  'meiosis',
+  'enzymes',
+  'rates',
+  'acidbase',
+  'circuits',
+  'induction',
+  'threephase',
+  'truss',
+  'fluid',
+  'stressstrain',
+  'pid',
+  'sampling',
+  'diode',
+]);
+
+async function loadView(route) {
+  const mod = await import(`./views/${route}.js`);
+  return Object.values(mod).find((v) => typeof v === 'function' && v.name.startsWith('mount'));
+}
+
+const webglSupported = (() => {
+  try {
+    const c = document.createElement('canvas');
+    return Boolean(window.WebGLRenderingContext && (c.getContext('webgl2') || c.getContext('webgl')));
+  } catch {
+    return false;
+  }
+})();
 
 const app = document.getElementById('app');
 let unmount = null;
 
-const currentPath = () => location.hash.replace(/^#\/?/, '');
+const currentPath = () => parseHash().path;
+let renderId = 0;
 
-function render() {
-  const path = currentPath();
+async function render() {
+  const id = ++renderId;
+  const { path, params } = parseHash();
   const [route, arg] = path.split('/');
   unmount?.();
   unmount = null;
-  const mount = VIEWS[route];
-  app.className = mount ? 'view' : 'home-view';
+  const isView = ROUTES.has(route);
+  app.className = isView ? 'view' : 'home-view';
   app.replaceChildren();
-  unmount = mount ? mount(app, arg) : mountHome(app);
   window.scrollTo(0, 0);
+  if (!isView) {
+    unmount = mountHome(app);
+    refreshChrome();
+    return;
+  }
+  if (!webglSupported) {
+    showProblem('webgl');
+    return;
+  }
+  app.innerHTML = '<div class="view-loading" role="status"><span class="spinner"></span>Loading…</div>';
+  let mount;
+  try {
+    mount = await loadView(route);
+  } catch (err) {
+    if (id === renderId) showProblem('load', err);
+    return;
+  }
+  if (id !== renderId) return; // the user moved on while this view was downloading
+  app.replaceChildren();
+  try {
+    unmount = mount(app, arg);
+  } catch (err) {
+    showProblem('crash', err);
+    return;
+  }
+  refreshChrome(params);
+  if ([...params.keys()].some((k) => k !== 'p')) applyState(app, params);
+}
+
+// A friendly card instead of a blank page when a view can't be shown.
+function showProblem(kind, err) {
+  const concept = findByPath(currentPath());
+  app.className = 'home-view';
+  const text = {
+    webgl: ['Your browser can\'t show 3D here', 'This page needs WebGL. Try turning on <b>hardware acceleration</b> in your browser settings, updating your browser, or opening it in Chrome, Edge or Firefox.'],
+    load: ['This concept didn\'t load', 'Check your internet connection and reload the page. If it keeps happening, please report it.'],
+    crash: ['Something went wrong in this concept', 'It\'s a bug on our side, not yours. Please report it so it can be fixed.'],
+  }[kind];
+  const detail = err ? `\n**Error:** \`${String(err.message ?? err).slice(0, 300)}\`` : '';
+  app.innerHTML = `<div class="problem-card"><h2>${text[0]}</h2><p>${text[1]}</p>
+    <div class="btn-row"><a class="btn" href="#/">← All concepts</a>${concept ? `<a class="btn secondary" target="_blank" rel="noopener" href="${reportLink(concept, location.href, detail)}">Report it</a>` : ''}</div></div>`;
   refreshChrome();
 }
 
+// Errors after a view is running (e.g. inside its animation) get a small, dismissable note with a report link.
+window.addEventListener('error', (e) => {
+  const concept = findByPath(currentPath());
+  if (!concept || document.querySelector('.error-toast')) return;
+  const toast = document.createElement('div');
+  toast.className = 'error-toast';
+  toast.innerHTML = `Something went wrong. <a target="_blank" rel="noopener" href="${reportLink(concept, location.href, `\n**Error:** \`${String(e.message).slice(0, 300)}\``)}">Report it</a> <button aria-label="Dismiss">×</button>`;
+  toast.querySelector('button').addEventListener('click', () => toast.remove());
+  document.body.append(toast);
+});
+
 // Breadcrumbs, prev/next and the "Start here" coach all follow the current concept.
-function refreshChrome() {
+function refreshChrome(params = new URLSearchParams()) {
   const concept = findByPath(currentPath());
   const crumbs = document.querySelector('[data-crumbs]');
   const prev = document.querySelector('[data-prev]');
@@ -168,9 +185,21 @@ function refreshChrome() {
   simplifyPanel(panel, concept);
   if (panel) {
     renderQuiz(panel, concept);
-    renderPractice(panel, concept, app);
+    const seed = Number(params.get('p'));
+    renderPractice(panel, concept, app, Number.isInteger(seed) && seed > 0 ? seed : undefined);
+    renderReport(panel, concept);
   }
   markVisited(concept.path);
+}
+
+// "Report a mistake" at the bottom of every concept: opens a pre-filled GitHub issue with a link to this exact state.
+function renderReport(panel, concept) {
+  panel.querySelector('.report')?.remove();
+  const p = document.createElement('p');
+  p.className = 'report';
+  p.innerHTML = '<a target="_blank" rel="noopener" href="#">⚑ Spotted a mistake? Report it</a>';
+  p.querySelector('a').addEventListener('click', (e) => { e.currentTarget.href = reportLink(concept, shareLink(app, concept.path)); });
+  panel.append(p);
 }
 
 // Keep the side panel light: the one-line idea and a real-world use come first, and the longer
@@ -223,5 +252,5 @@ window.addEventListener('keydown', (e) => {
 document.querySelector('[data-search-open]')?.addEventListener('click', openPalette);
 
 window.addEventListener('hashchange', render);
-window.addEventListener('concept-change', refreshChrome);
+window.addEventListener('concept-change', () => refreshChrome());
 render();

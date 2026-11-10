@@ -1,0 +1,19 @@
+# Runs on every push and pull request: checks every module parses, then runs the unit tests.
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Syntax check every module
+        run: for f in $(find js -name '*.js'); do node --check --input-type=module < "$f" || { echo "Syntax error in $f"; exit 1; }; done
+      - name: Unit tests
+        run: npm test
