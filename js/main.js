@@ -188,8 +188,32 @@ function refreshChrome(params = new URLSearchParams()) {
     const seed = Number(params.get('p'));
     renderPractice(panel, concept, app, Number.isInteger(seed) && seed > 0 ? seed : undefined);
     renderReport(panel, concept);
+    renderJumps(panel);
   }
   markVisited(concept.path);
+}
+
+// Practice and quiz live at the bottom of the panel, below the model's controls. These buttons near the top make
+// them easy to find: they scroll there and briefly highlight the section.
+function renderJumps(panel) {
+  panel.querySelector('.jumps')?.remove();
+  const targets = [['.practice', '✎ Practice problem'], ['.quiz', '✓ Quick quiz']].filter(([sel]) => panel.querySelector(sel));
+  if (!targets.length) return;
+  const row = document.createElement('div');
+  row.className = 'jumps';
+  row.innerHTML = targets.map(([sel, label]) => `<button type="button" data-jump="${sel}">${label} ↓</button>`).join('');
+  row.addEventListener('click', (e) => {
+    const sel = e.target.closest('[data-jump]')?.dataset.jump;
+    const section = sel && panel.querySelector(sel);
+    if (!section) return;
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    section.classList.remove('flash');
+    void section.offsetWidth; // restart the highlight animation
+    section.classList.add('flash');
+  });
+  const anchor = panel.querySelector('details.more') ?? panel.querySelector('.big-idea');
+  if (anchor) anchor.after(row);
+  else panel.prepend(row);
 }
 
 // "Report a mistake" at the bottom of every concept: opens a pre-filled GitHub issue with a link to this exact state.

@@ -834,3 +834,12 @@ kbd { font: 600 10px/1 var(--font-mono); padding: 3px 5px; border-radius: 5px; b
 .report { margin: 22px 0 0; font-size: 12px; }
 .report a { color: var(--muted); }
 .report a:hover { color: var(--accent); }
+
+/* --- Jump buttons to practice / quiz -------------------------------------- */
+.jumps { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 14px; }
+.jumps button { padding: 7px 12px; border-radius: 999px; border: 1px solid rgba(250, 204, 21, 0.45); background: rgba(250, 204, 21, 0.08); color: #fde68a; font: 600 11px/1 var(--font-mono); text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; }
+.jumps button:hover { background: rgba(250, 204, 21, 0.18); }
+.jumps button + button { border-color: var(--border-strong); background: transparent; color: var(--text); }
+.practice.flash, .quiz.flash { animation: flash 1.4s ease-out; }
+@keyframes flash { 0%, 30% { box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.7); } 100% { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0); } }
+@media (prefers-reduced-motion: reduce) { .practice.flash, .quiz.flash { animation: none; } }
