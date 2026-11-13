@@ -12,10 +12,10 @@ export function attachToolbar(viewport, concept) {
   const bar = document.createElement('div');
   bar.className = 'view-tools';
   bar.innerHTML = `
-    <button data-tool="reset" title="Reset view (R)" aria-label="Reset view">⟲</button>
-    <button data-tool="full" title="Fullscreen (F)" aria-label="Fullscreen">⛶</button>
-    <button data-tool="shot" title="Save a screenshot" aria-label="Save a screenshot">📷</button>
-    <button data-tool="share" title="Copy a link to exactly this (settings + practice problem)" aria-label="Copy share link">🔗</button>
+    <button data-tool="reset" title="Put the camera back where it started (R)">⟲ <span>Reset view</span></button>
+    <button data-tool="full" title="Fill the screen (F)">⛶ <span>Full screen</span></button>
+    <button data-tool="shot" title="Download a picture of the model">📷 <span>Save image</span></button>
+    <button data-tool="share" title="Copy a link to exactly this: settings and practice problem">🔗 <span>Share</span></button>
   `;
   bar.addEventListener('click', (e) => {
     const tool = e.target.closest('[data-tool]')?.dataset.tool;

@@ -39,7 +39,7 @@ a { color: inherit; }
 ::selection { background: #7c3aed; color: #fff; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-.tag, .eyebrow, .panel h3, .card small, .coach-head, .chip, .nav-btn, .btn {
+.tag, .eyebrow, .panel h3, .card small, .chip, .nav-btn, .btn {
   font-family: var(--font-mono);
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -514,59 +514,7 @@ legend { color: var(--muted); padding: 0 6px; font: 600 10px/1 var(--font-mono);
 .legend ul { padding-left: 16px; line-height: 1.65; color: var(--muted); }
 .swatch { display: inline-block; width: 9px; height: 9px; border-radius: 3px; background: var(--c); margin-right: 3px; }
 
-/* --- "Try this" tips ------------------------------------------------------ */
-.coach {
-  position: absolute;
-  left: 16px;
-  bottom: 16px;
-  z-index: 3;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: min(520px, calc(100% - 32px));
-  padding: 10px 10px 10px 14px;
-  border-radius: 14px;
-  border: 1px solid rgba(177, 151, 252, 0.35);
-  background: rgba(8, 10, 28, 0.88);
-  backdrop-filter: blur(14px);
-  box-shadow: 0 20px 50px -24px rgba(124, 58, 237, 0.6);
-  font-size: 13px;
-  line-height: 1.45;
-  animation: coach-in 0.35s ease-out;
-}
-@keyframes coach-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
-.coach-head { flex: none; font-size: 10px; font-weight: 700; color: var(--accent); white-space: nowrap; }
-.coach-text { flex: 1; min-width: 0; }
-.coach-text.swap { animation: tip-in 0.3s ease-out; }
-@keyframes tip-in { from { opacity: 0; transform: translateX(6px); } to { opacity: 1; transform: none; } }
-.coach-nav { flex: none; display: flex; gap: 4px; }
-.coach-btn {
-  width: 28px;
-  height: 28px;
-  border-radius: 8px;
-  border: 1px solid var(--border-strong);
-  background: transparent;
-  color: var(--text);
-  font: 700 15px/1 var(--font-mono);
-  cursor: pointer;
-}
-.coach-btn:hover:not(:disabled) { background: var(--surface-2); }
-.coach-btn:disabled { opacity: 0.3; cursor: default; }
-.coach-reopen {
-  position: absolute;
-  left: 16px;
-  bottom: 16px;
-  z-index: 3;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 1px solid var(--border-strong);
-  background: rgba(8, 10, 28, 0.9);
-  color: var(--accent);
-  font: 700 14px/1 var(--font-mono);
-  cursor: pointer;
-}
-.coach-reopen:hover { box-shadow: var(--glow); }
+
 
 /* --- Data structures ------------------------------------------------------ */
 .tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 4px; margin: 10px 0 14px; border: 1px solid var(--border-strong); border-radius: 12px; }
@@ -623,12 +571,11 @@ legend { color: var(--muted); padding: 0 6px; font: 600 10px/1 var(--font-mono);
   .search-bar .btn { padding: 10px 12px; }
   body:not(.in-concept) .topbar { border-radius: 20px; height: auto; }
   .hero-sub { font-size: 15px; }
-  .coach { left: 10px; bottom: 10px; width: calc(100% - 20px); flex-wrap: wrap; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .card { transition: none; transform: none !important; }
-  .coach, .coach-text.swap, .blur-in, .tile, #app.view > *, #app.home-view > * { animation: none; }
+  .blur-in, .tile, #app.view > *, #app.home-view > * { animation: none; }
   .reveal { opacity: 1; filter: none; transform: none; transition: none; }
 }
 
@@ -702,6 +649,8 @@ kbd { font: 600 10px/1 var(--font-mono); padding: 3px 5px; border-radius: 5px; b
 
 @media (max-width: 820px) {
   .search-btn span, .search-btn kbd { display: none; }
+  /* Inside a concept on a phone, the logo already goes home; drop "All concepts" so the bar fits. */
+  body.in-concept .top-actions .nav-btn.ghost:not(.search-btn) { display: none; }
 }
 
 /* --- Binary search ------------------------------------------------------- */
@@ -835,11 +784,60 @@ kbd { font: 600 10px/1 var(--font-mono); padding: 3px 5px; border-radius: 5px; b
 .report a { color: var(--muted); }
 .report a:hover { color: var(--accent); }
 
-/* --- Jump buttons to practice / quiz -------------------------------------- */
-.jumps { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 14px; }
-.jumps button { padding: 7px 12px; border-radius: 999px; border: 1px solid rgba(250, 204, 21, 0.45); background: rgba(250, 204, 21, 0.08); color: #fde68a; font: 600 11px/1 var(--font-mono); text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; }
-.jumps button:hover { background: rgba(250, 204, 21, 0.18); }
-.jumps button + button { border-color: var(--border-strong); background: transparent; color: var(--text); }
-.practice.flash, .quiz.flash { animation: flash 1.4s ease-out; }
-@keyframes flash { 0%, 30% { box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.7); } 100% { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0); } }
-@media (prefers-reduced-motion: reduce) { .practice.flash, .quiz.flash { animation: none; } }
+
+
+/* --- Concept panel: 1 Explore · 2 Practice · 3 Quiz ------------------------ */
+.panel-tabs {
+  position: sticky;
+  top: -22px; /* the panel's top padding: stick to its very top edge */
+  z-index: 2;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 0;
+  margin: 0 -20px 16px;
+  padding: 4px 20px 0;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-solid);
+}
+.panel-tabs button {
+  padding: 10px 2px 9px;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: var(--muted);
+  font: 600 12px/1 var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.panel-tabs button b { display: inline-grid; place-items: center; width: 18px; height: 18px; margin-right: 5px; border-radius: 50%; border: 1px solid currentColor; font-size: 10px; vertical-align: -1px; }
+.panel-tabs button:hover { color: var(--text); }
+/* Section tabs are underlined, so they never look like the model's own option buttons (which are filled). */
+.panel-tabs button[aria-selected="true"] { color: var(--text); border-image: var(--aurora) 1; }
+.panel-tabs button[aria-selected="true"] b { background: var(--aurora); border-color: transparent; color: #fff; }
+.pane[data-pane="practice"] .practice, .pane[data-pane="quiz"] .quiz { margin-top: 0; }
+.pane[data-pane="quiz"] .quiz { border-top: 0; padding-top: 0; }
+.howto { margin: 0 0 16px; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--border-strong); background: rgba(255, 255, 255, 0.02); }
+.howto summary { cursor: pointer; font: 600 11px/1.6 var(--font-mono); text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); }
+.howto ol { margin: 10px 0 6px; padding-left: 20px; line-height: 1.55; font-size: 13px; }
+.howto li { margin-bottom: 4px; }
+.howto li::marker { color: var(--accent); font-family: var(--font-mono); }
+.howto-foot { margin: 0; color: var(--muted); font: 500 10px/1.4 var(--font-mono); text-transform: uppercase; letter-spacing: 0.04em; }
+
+/* Labelled toolbar buttons (icons alone were unclear). */
+.view-tools button { width: auto; padding: 0 10px; display: inline-flex; align-items: center; gap: 6px; font-size: 13px; }
+.view-tools button span { font: 600 11px/1 var(--font-mono); text-transform: uppercase; letter-spacing: 0.04em; }
+
+/* Home: one row of filters and the 3 steps. */
+.catalog-tools select { min-width: 170px; }
+.how-steps { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 22px; list-style: none; margin: 16px 0 0; padding: 0; color: var(--muted); font-size: 14px; }
+.how-steps li b { display: inline-grid; place-items: center; width: 22px; height: 22px; margin-right: 6px; border-radius: 50%; background: var(--aurora); color: #fff; font: 700 12px/1 var(--font-mono); }
+.how-steps span { color: var(--text); font-weight: 600; }
+
+@media (max-width: 820px) {
+  .view-tools button span { display: none; }
+  .panel-tabs { top: 0; }
+}

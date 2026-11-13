@@ -1,7 +1,7 @@
 // Hash router. Routes look like #/drawing or #/structures/heap (optionally ?settings, see share.js); each view
 // mounts into #app and returns a cleanup. A view's code is only downloaded when it is first opened.
 import { mountHome } from './home.js';
-import { showCoach } from './coach.js';
+import { renderHowTo } from './coach.js';
 import { attachToolbar, toggleFullscreen } from './toolbar.js';
 import { renderQuiz } from './quiz.js';
 import { renderPractice } from './practice.js';
@@ -126,6 +126,9 @@ async function render() {
   }
   refreshChrome(params);
   if ([...params.keys()].some((k) => k !== 'p')) applyState(app, params);
+  // A shared practice problem opens on the Practice tab.
+  const panel = app.querySelector('.panel');
+  if (params.has('p') && panel?.querySelector(':scope > .pane[data-pane="practice"]')) showPane(panel, 'practice');
 }
 
 // A friendly card instead of a blank page when a view can't be shown.
@@ -154,7 +157,7 @@ window.addEventListener('error', (e) => {
   document.body.append(toast);
 });
 
-// Breadcrumbs, prev/next and the "Start here" coach all follow the current concept.
+// Breadcrumbs, prev/next and the concept panel's tabs all follow the current concept.
 function refreshChrome(params = new URLSearchParams()) {
   const concept = findByPath(currentPath());
   const crumbs = document.querySelector('[data-crumbs]');
@@ -177,10 +180,7 @@ function refreshChrome(params = new URLSearchParams()) {
   next.href = `#/${after.path}`;
   next.innerHTML = `Next: ${after.title} →`;
   const viewport = app.querySelector('.viewport');
-  if (viewport) {
-    showCoach(viewport, concept);
-    attachToolbar(viewport, concept);
-  }
+  if (viewport) attachToolbar(viewport, concept);
   const panel = app.querySelector('.panel');
   simplifyPanel(panel, concept);
   if (panel) {
@@ -188,32 +188,77 @@ function refreshChrome(params = new URLSearchParams()) {
     const seed = Number(params.get('p'));
     renderPractice(panel, concept, app, Number.isInteger(seed) && seed > 0 ? seed : undefined);
     renderReport(panel, concept);
-    renderJumps(panel);
+    layoutPanel(panel, concept);
   }
   markVisited(concept.path);
 }
 
-// Practice and quiz live at the bottom of the panel, below the model's controls. These buttons near the top make
-// them easy to find: they scroll there and briefly highlight the section.
-function renderJumps(panel) {
-  panel.querySelector('.jumps')?.remove();
-  const targets = [['.practice', '✎ Practice problem'], ['.quiz', '✓ Quick quiz']].filter(([sel]) => panel.querySelector(sel));
-  if (!targets.length) return;
-  const row = document.createElement('div');
-  row.className = 'jumps';
-  row.innerHTML = targets.map(([sel, label]) => `<button type="button" data-jump="${sel}">${label} ↓</button>`).join('');
-  row.addEventListener('click', (e) => {
-    const sel = e.target.closest('[data-jump]')?.dataset.jump;
-    const section = sel && panel.querySelector(sel);
-    if (!section) return;
-    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    section.classList.remove('flash');
-    void section.offsetWidth; // restart the highlight animation
-    section.classList.add('flash');
-  });
-  const anchor = panel.querySelector('details.more') ?? panel.querySelector('.big-idea');
-  if (anchor) anchor.after(row);
-  else panel.prepend(row);
+// The concept panel in three numbered tabs, so only one job shows at a time:
+//   1 Explore (how-to steps, the model's controls and results) · 2 Practice (a numerical problem) · 3 Quiz.
+// The title and the one-line idea stay above the tabs. Runs again on data-structure tab changes: idempotent.
+const PANES = [['explore', 'Explore'], ['practice', 'Practice'], ['quiz', 'Quiz']];
+
+function layoutPanel(panel, concept) {
+  let explore = panel.querySelector(':scope > .pane[data-pane="explore"]');
+  if (!explore) {
+    const header = new Set([panel.querySelector(':scope > h2'), panel.querySelector(':scope > .big-idea'), panel.querySelector(':scope > details.more')]);
+    explore = document.createElement('div');
+    explore.className = 'pane';
+    explore.dataset.pane = 'explore';
+    for (const el of [...panel.children]) {
+      if (!header.has(el) && !el.matches('.practice, .quiz, .report')) explore.append(el);
+    }
+    const tabs = document.createElement('nav');
+    tabs.className = 'panel-tabs';
+    tabs.setAttribute('role', 'tablist');
+    tabs.addEventListener('click', (e) => {
+      const b = e.target.closest('[data-show]');
+      if (b) showPane(panel, b.dataset.show);
+    });
+    const last = [...header].filter(Boolean).at(-1);
+    if (last) last.after(tabs, explore);
+    else panel.prepend(tabs, explore);
+  }
+  // Practice and quiz are re-rendered on every refresh; put each into its own pane.
+  for (const [name] of PANES.slice(1)) {
+    const section = panel.querySelector(`.${name}`);
+    let pane = panel.querySelector(`:scope > .pane[data-pane="${name}"]`);
+    if (!section) { pane?.remove(); continue; }
+    if (!pane) {
+      pane = document.createElement('div');
+      pane.className = 'pane';
+      pane.dataset.pane = name;
+      const report = panel.querySelector(':scope > .report');
+      if (report) report.before(pane);
+      else panel.append(pane);
+    }
+    pane.replaceChildren(section);
+  }
+  renderHowTo(explore, concept);
+  const tabs = panel.querySelector('.panel-tabs');
+  const available = PANES.filter(([name]) => panel.querySelector(`:scope > .pane[data-pane="${name}"]`));
+  tabs.innerHTML = available.map(([name, label], i) => `<button role="tab" data-show="${name}"><b>${i + 1}</b> ${label}</button>`).join('');
+  showPane(panel, available.some(([n]) => n === panel.dataset.pane) ? panel.dataset.pane : 'explore');
+}
+
+function showPane(panel, name) {
+  panel.dataset.pane = name;
+  for (const pane of panel.querySelectorAll(':scope > .pane')) pane.hidden = pane.dataset.pane !== name;
+  for (const b of panel.querySelectorAll('.panel-tabs [data-show]')) b.setAttribute('aria-selected', String(b.dataset.show === name));
+  const tabs = panel.querySelector('.panel-tabs');
+  if (tabs && panel.scrollTop > tabs.offsetTop) panel.scrollTop = tabs.offsetTop - 8;
+}
+
+// "?" opens the how-to steps (Explore tab).
+function showHowTo() {
+  const panel = app.querySelector('.panel');
+  if (!panel) return;
+  showPane(panel, 'explore');
+  const box = panel.querySelector('.howto');
+  if (box) {
+    box.open = true;
+    box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
 }
 
 // "Report a mistake" at the bottom of every concept: opens a pre-filled GitHub issue with a link to this exact state.
@@ -269,7 +314,7 @@ window.addEventListener('keydown', (e) => {
   else if (e.key === 'ArrowLeft') document.querySelector('[data-prev]').click();
   else if (e.key === 'r' || e.key === 'R') stageFor(viewport)?.resetView();
   else if (e.key === 'f' || e.key === 'F') toggleFullscreen(viewport);
-  else if (e.key === '?') viewport.querySelector('.coach-reopen:not([hidden])')?.click();
+  else if (e.key === '?') showHowTo();
   else return;
   e.preventDefault();
 });

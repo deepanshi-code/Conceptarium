@@ -74,7 +74,7 @@ export function renderPractice(panel, concept, viewRoot, seed) {
     }
     const fb = section.querySelector('[data-fb]');
     fb.className = 'feedback';
-    fb.textContent = 'Loaded: the model now shows this problem. Its readouts are a good way to check your working.';
+    fb.textContent = 'Loaded: the 3D model now shows this problem. Its readouts (in 1 Explore) are a good way to check your working.';
   }
 
   section.addEventListener('submit', (e) => {

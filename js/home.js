@@ -47,19 +47,25 @@ export function mountHome(root) {
       <div class="section-head centered reveal">
         <span class="pill-tag"><span class="dot"></span>All concepts</span>
         <h2>Pick a concept. <em>Learn it by moving it.</em></h2>
+        <ol class="how-steps">
+          <li><b>1</b> Pick a concept below</li>
+          <li><b>2</b> <span>Explore</span>: play with the 3D model</li>
+          <li><b>3</b> <span>Practice</span> a problem, then take the <span>Quiz</span></li>
+        </ol>
       </div>
       <div class="progress-strip reveal" data-progress></div>
       <div class="catalog-tools reveal">
-        <input type="search" placeholder="Filter concepts…" data-search aria-label="Filter concepts">
-        <select data-course aria-label="Study by course">
-          <option value="">📘 Study by course: all</option>
+        <input type="search" placeholder="Search concepts…" data-search aria-label="Search concepts">
+        <select data-subject aria-label="Filter by subject">
+          <option value="">All subjects</option>
+          ${Object.entries(SUBJECTS).map(([key, sub]) => `<option value="${key}">${sub.name}</option>`).join('')}
+        </select>
+        <select data-course aria-label="Filter by course">
+          <option value="">All courses</option>
           ${Object.keys(COURSES).map((c) => `<option>${c}</option>`).join('')}
         </select>
-        <label class="check practice-only"><input type="checkbox" data-practice> ✎ Has practice problems</label>
-        <div class="chips" data-chips>
-          <button class="chip active" data-subject="">All</button>
-          ${Object.entries(SUBJECTS).map(([key, s]) => `<button class="chip" data-subject="${key}" style="--c:${s.color}">${s.name}</button>`).join('')}
-        </div>
+        <label class="check practice-only"><input type="checkbox" data-practice> Only with practice problems</label>
+
       </div>
       <div data-cards></div>
       <p class="empty" data-empty hidden>No concept matches that search yet.</p>
@@ -123,11 +129,7 @@ export function mountHome(root) {
     state.query = e.target.value;
     renderCards();
   });
-  root.querySelectorAll('[data-subject]').forEach((chip) => chip.addEventListener('click', () => {
-    state.subject = chip.dataset.subject;
-    root.querySelectorAll('[data-subject]').forEach((c) => c.classList.toggle('active', c === chip));
-    renderCards();
-  }));
+  $('[data-subject]').addEventListener('change', (e) => { state.subject = e.target.value; renderCards(); });
 
   // The hero search filters the catalog and scrolls down to it.
   $('[data-hero-search]').addEventListener('submit', (e) => {

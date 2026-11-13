@@ -16,7 +16,7 @@ The landing page has a northern-lights hero with a 3D planet horizon, a "concept
 
 **Built-in help for students:** every concept ends with a two-question "Check yourself" quiz that explains each answer; the home page tracks what you have explored and mastered (stored only in your browser); <kbd>Ctrl K</kbd> or <kbd>/</kbd> opens quick search; each 3D view has Reset view (<kbd>R</kbd>), Fullscreen (<kbd>F</kbd>) and Screenshot buttons; <kbd>←</kbd> <kbd>→</kbd> move between concepts.
 
-Text is kept short on purpose. Each concept opens with a one-line idea and where you meet it in real life; the longer explanation is folded under "Explain more", and a one-line "Try 1/3" strip suggests what to do next.
+**One clear layout for every concept:** the 3D model on the left; on the right, the title and a one-line idea (with where you meet it in real life), then three numbered tabs: **1 Explore** (how-to steps, the model's controls and results), **2 Practice** (a numerical problem) and **3 Quiz**. The longer explanation is folded under "Explain more". The 3D view itself is left uncovered, with labelled Reset view / Full screen / Save image / Share buttons.
 
 | Visualization | Subject | What you can do |
 |---|---|---|
