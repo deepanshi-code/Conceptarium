@@ -8,6 +8,7 @@ import { renderPractice } from './practice.js';
 import { coursesFor } from './courses.js';
 import { markVisited } from './progress.js';
 import { openPalette } from './palette.js';
+import { openAsk } from './ask.js';
 import { stageFor } from './stage.js';
 import { CATALOG, SUBJECTS, findByPath } from './catalog.js';
 import { parseHash, applyState, shareLink, reportLink } from './share.js';
@@ -302,6 +303,7 @@ app.addEventListener('click', (e) => e.target.closest('.panel .hint')?.classList
 // Keyboard shortcuts. Ctrl/⌘ + K or / opens quick search anywhere; the rest only apply inside a concept and
 // never while typing in a field (arrow keys still move sliders when a slider has focus).
 window.addEventListener('keydown', (e) => {
+  if (document.querySelector('.palette-overlay')) return; // search or Ask is open: it handles its own keys
   const typing = e.target.closest?.('input, textarea, select, [contenteditable]');
   if ((e.key === 'k' && (e.ctrlKey || e.metaKey)) || (e.key === '/' && !typing)) {
     e.preventDefault();
@@ -319,6 +321,7 @@ window.addEventListener('keydown', (e) => {
   e.preventDefault();
 });
 document.querySelector('[data-search-open]')?.addEventListener('click', openPalette);
+document.querySelector('[data-ask-open]')?.addEventListener('click', openAsk);
 
 window.addEventListener('hashchange', render);
 window.addEventListener('concept-change', () => refreshChrome());

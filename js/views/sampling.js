@@ -89,7 +89,7 @@ export function mountSampling(root) {
     let dots = '';
     for (let t = 0; t <= span + 1e-9; t += 1 / state.fs) dots += `<circle cx="${x(t).toFixed(1)}" cy="${y(Math.sin(2 * Math.PI * state.f * t)).toFixed(1)}" r="3" fill="#facc15"/>`;
     $('[data-graph]').innerHTML = `<svg viewBox="0 0 ${w} ${h}" width="100%" role="img" aria-label="Signal and samples"><path d="${real}" class="edge" style="stroke:#a78bfa;stroke-dasharray:none;opacity:.6"/><path d="${alias}" class="q" style="stroke-dasharray:4 3"/>${dots}
-      <text x="4" y="12" class="tlabel">real signal (violet), samples (yellow), what they trace (green)</text></svg>`;
+      <text x="4" y="12" class="tlabel"><tspan fill="#a78bfa">● signal</tspan>  <tspan fill="#facc15">● samples</tspan>  <tspan fill="#4ade80">● what they trace</tspan></text></svg>`;
   }
 
   const update = () => { readout(); drawGraph(); };

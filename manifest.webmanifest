@@ -1,0 +1,13 @@
+{
+  "name": "Conceptarium",
+  "short_name": "Conceptarium",
+  "description": "Learn engineering concepts by moving them in 3D.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#12173c",
+  "theme_color": "#12173c",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

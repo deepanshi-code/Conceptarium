@@ -8,6 +8,10 @@ export function attachToolbar(viewport, concept) {
   const stage = stageFor(viewport);
   if (!stage) return;
   stage.saveHome();
+  // Screen readers: describe the 3D model; its controls and readouts are in the panel next to it.
+  const canvas = viewport.querySelector('canvas');
+  canvas?.setAttribute('role', 'img');
+  canvas?.setAttribute('aria-label', `3D model: ${concept.title}. ${concept.idea} Use the controls in the panel to change it.`);
 
   const bar = document.createElement('div');
   bar.className = 'view-tools';

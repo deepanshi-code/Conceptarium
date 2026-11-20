@@ -17,7 +17,9 @@ const registry = new WeakMap();
 export const stageFor = (container) => registry.get(container);
 
 export function createStage(container, { cameraPosition = [4, 3.5, 5], axisLength = 3.5, axes = true, grid = true } = {}) {
-  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  // Transparent canvas: the page's aurora shows behind every 3D scene.
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setClearColor(0x000000, 0);
   // Start sharp; the frame loop steps the resolution down if this machine can't keep up (see below).
   let pixelRatio = Math.min(window.devicePixelRatio, 1.75);
   renderer.setPixelRatio(pixelRatio);
@@ -29,7 +31,7 @@ export function createStage(container, { cameraPosition = [4, 3.5, 5], axisLengt
   container.appendChild(labelRenderer.domElement);
 
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x070a1a);
+  scene.background = null;
 
   const perspective = new THREE.PerspectiveCamera(50, 1, 0.05, 200);
   perspective.position.set(...cameraPosition);
@@ -46,7 +48,7 @@ export function createStage(container, { cameraPosition = [4, 3.5, 5], axisLengt
   sun.position.set(5, 8, 6);
   scene.add(sun);
 
-  if (grid) scene.add(new THREE.GridHelper(10, 20, 0x2a2f55, 0x161a36));
+  if (grid) scene.add(new THREE.GridHelper(10, 20, 0x3e4579, 0x2a305e));
   if (axes) scene.add(createAxes(axisLength));
 
   function resize() {
@@ -148,8 +150,13 @@ export function createStage(container, { cameraPosition = [4, 3.5, 5], axisLengt
     },
     /** PNG of the current frame (3D only; HTML labels are not part of the canvas). */
     snapshot() {
+      // Screenshots get a solid background (the live view is transparent over the page's aurora).
+      const before = scene.background;
+      scene.background = new THREE.Color(0x12173c);
       renderer.render(scene, camera);
-      return renderer.domElement.toDataURL('image/png');
+      const url = renderer.domElement.toDataURL('image/png');
+      scene.background = before;
+      return url;
     },
     dispose() {
       renderer.setAnimationLoop(null);

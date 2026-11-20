@@ -237,6 +237,7 @@ const Q = {
     ['Under reverse bias, the depletion region…', ['Gets wider', 'Disappears', 'Stays the same'], 0, 'Carriers are pulled away from the junction, so only a tiny leakage current flows.'],
   ],
 };
+export const QUIZ = Q; // also read by the Ask helper (ask/engine.js)
 
 // Options appear in a new order each time, so the right answer isn't learned by position.
 function shuffle(arr) {
