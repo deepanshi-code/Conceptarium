@@ -9,6 +9,7 @@ import { coursesFor } from './courses.js';
 import { markVisited } from './progress.js';
 import { openPalette } from './palette.js';
 import { openAsk } from './ask.js';
+import { showWelcome } from './welcome.js';
 import { stageFor } from './stage.js';
 import { CATALOG, SUBJECTS, findByPath } from './catalog.js';
 import { parseHash, applyState, shareLink, reportLink } from './share.js';
@@ -94,6 +95,11 @@ async function render() {
   const id = ++renderId;
   const { path, params } = parseHash();
   const [route, arg] = path.split('/');
+  // #/hello replays the welcome intro over the home page.
+  if (route === 'hello') {
+    history.replaceState(null, '', '#/');
+    showWelcome();
+  }
   unmount?.();
   unmount = null;
   const isView = ROUTES.has(route);
@@ -303,7 +309,7 @@ app.addEventListener('click', (e) => e.target.closest('.panel .hint')?.classList
 // Keyboard shortcuts. Ctrl/⌘ + K or / opens quick search anywhere; the rest only apply inside a concept and
 // never while typing in a field (arrow keys still move sliders when a slider has focus).
 window.addEventListener('keydown', (e) => {
-  if (document.querySelector('.palette-overlay')) return; // search or Ask is open: it handles its own keys
+  if (document.querySelector('.palette-overlay, .welcome, .gt')) return; // search, Ask, the intro or the tour handles its own keys
   const typing = e.target.closest?.('input, textarea, select, [contenteditable]');
   if ((e.key === 'k' && (e.ctrlKey || e.metaKey)) || (e.key === '/' && !typing)) {
     e.preventDefault();
@@ -325,4 +331,7 @@ document.querySelector('[data-ask-open]')?.addEventListener('click', openAsk);
 
 window.addEventListener('hashchange', render);
 window.addEventListener('concept-change', () => refreshChrome());
+// Opening the site on the home page plays the welcome intro (not when arriving through a link to a concept,
+// and not when moving back to the home page inside the site).
+if (!currentPath()) showWelcome();
 render();

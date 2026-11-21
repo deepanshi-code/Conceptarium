@@ -140,7 +140,11 @@ export function mountInduction(root) {
     const h = 110;
     const tr = state.trace;
     const max = state.mode === 'magnet' ? Math.max(5, ...tr.map((p) => Math.abs(p[1]))) : Math.max(state.Vp, transformer(state.Vp, state.Np, state.Ns, 10).Vs);
-    const y = (v) => h / 2 - (v / max) * (h / 2 - 6);
+    // Points recorded before a mode switch may lack a value: draw them on the zero line instead of NaN.
+    const y = (v) => {
+      const out = h / 2 - (v / max) * (h / 2 - 6);
+      return Number.isFinite(out) ? out : h / 2;
+    };
     const path = (k) => tr.map((p, i) => `${i ? 'L' : 'M'}${((i / TRACE) * w).toFixed(1)},${y(p[k]).toFixed(1)}`).join('');
     $('[data-graph]').innerHTML = `<svg viewBox="0 0 ${w} ${h}" width="100%" role="img" aria-label="Voltage graph"><line x1="0" x2="${w}" y1="${h / 2}" y2="${h / 2}" class="edge"/>
       ${state.mode === 'magnet' ? `<path d="${path(1)}" class="q"/><text x="4" y="12" class="tlabel">emf</text>` : `<path d="${path(1)}" class="in"/><path d="${path(2)}" class="q"/><text x="4" y="12" class="tlabel">Vp (yellow), Vs (green)</text>`}</svg>`;
