@@ -1018,8 +1018,10 @@ body:not(.in-concept) {
   --page-bg: #06071a;
   background: var(--bg);
 }
-/* Dim the 3D night sky (only the picture, not its labels) so the page sits on near-black. */
-.hero-sky canvas, .sky-frame canvas { filter: brightness(0.62) saturate(1.1); }
+/* Dim the 3D night sky (the picture, not its labels) with a plain dark layer over it. (A CSS filter on the
+   canvas looked the same but forced the browser to redraw the whole canvas a second time every frame.) */
+.hero-sky::after, .sky-frame::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: rgba(2, 3, 12, 0.38); }
+.sky-frame .label-layer { z-index: 2; }
 
 @media (max-height: 520px) {
   .welcome-mark { display: none; }
@@ -1079,3 +1081,6 @@ body:not(.in-concept) {
   .gt-spot, .gt-card { transition: none; animation: none; }
 }
 
+/* On concept pages the 3D model is the moving thing: hold the background glow still there, so the browser
+   doesn't have to re-blur the see-through panels over a moving background on every frame. */
+body.in-concept::before { animation-play-state: paused; }

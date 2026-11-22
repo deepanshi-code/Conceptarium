@@ -4,11 +4,14 @@ import { mountHome } from './home.js';
 import { renderHowTo } from './coach.js';
 import { attachToolbar, toggleFullscreen } from './toolbar.js';
 import { renderQuiz } from './quiz.js';
-import { renderPractice } from './practice.js';
 import { coursesFor } from './courses.js';
 import { markVisited } from './progress.js';
 import { openPalette } from './palette.js';
 import { openAsk } from './ask.js';
+import { hasPractice } from './practice/paths.js';
+
+let practiceModule = null;
+const loadPractice = () => (practiceModule ??= import('./practice.js'));
 import { showWelcome } from './welcome.js';
 import { stageFor } from './stage.js';
 import { CATALOG, SUBJECTS, findByPath } from './catalog.js';
@@ -192,10 +195,19 @@ function refreshChrome(params = new URLSearchParams()) {
   simplifyPanel(panel, concept);
   if (panel) {
     renderQuiz(panel, concept);
-    const seed = Number(params.get('p'));
-    renderPractice(panel, concept, app, Number.isInteger(seed) && seed > 0 ? seed : undefined);
     renderReport(panel, concept);
     layoutPanel(panel, concept);
+    // The practice problem code (all generators and their solvers) only downloads on concept pages that use it;
+    // the Practice tab appears as soon as it arrives.
+    if (hasPractice(concept.path)) {
+      const seed = Number(params.get('p'));
+      loadPractice().then(({ renderPractice }) => {
+        if (findByPath(currentPath()) !== concept || !panel.isConnected) return; // moved on meanwhile
+        renderPractice(panel, concept, app, Number.isInteger(seed) && seed > 0 ? seed : undefined);
+        layoutPanel(panel, concept);
+        if (params.has('p')) showPane(panel, 'practice');
+      });
+    }
   }
   markVisited(concept.path);
 }

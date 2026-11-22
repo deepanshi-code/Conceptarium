@@ -8,7 +8,9 @@ import { CATALOG, SUBJECTS } from './catalog.js';
 const CAMERA_DIST = 18;
 
 export function buildSky(container, { mode = 'map', scrollEl = null } = {}) {
-  const stage = createStage(container, { cameraPosition: [0, 1.2, CAMERA_DIST], axes: false, grid: false });
+  // Both skies are soft backdrops: a lower resolution looks the same and costs far less (their nebula shaders
+  // run per pixel). The hero is only a background, so 30 frames a second is plenty.
+  const stage = createStage(container, { cameraPosition: [0, 1.2, CAMERA_DIST], axes: false, grid: false, maxPixelRatio: 1, maxFps: mode === 'hero' ? 30 : 0, staticLabels: mode !== 'hero' });
   const { controls, scene: root } = stage;
   root.background = new THREE.Color(0x040616);
   controls.target.set(0, 0.6, 0);
@@ -88,7 +90,7 @@ export function buildSky(container, { mode = 'map', scrollEl = null } = {}) {
       orb.add(halo);
       const label = makeLabel(concept.title, new THREE.Vector3(0, 0.42, 0), 0xe6e9f2, 'star-label');
       orb.add(label);
-      orb.userData = { concept, label, phase: Math.random() * Math.PI * 2 };
+      orb.userData = { concept, label, halo, phase: Math.random() * Math.PI * 2 };
       sky.add(orb);
       stars.push(orb);
     });
@@ -130,12 +132,13 @@ export function buildSky(container, { mode = 'map', scrollEl = null } = {}) {
   let time = 0;
   stage.onFrame((dt) => {
     time += dt;
-    // A slow sway instead of a full spin keeps the layout readable.
-    sky.rotation.y = Math.sin(time * 0.12) * 0.22;
-    sky.rotation.x = Math.sin(time * 0.09) * 0.05;
+    // Stars twinkle through their glow (a sprite), not their own size: each star's name label hangs off the star,
+    // so scaling the star would move all 58 labels every frame and make the browser re-lay them out.
     for (const orb of stars) {
-      const target = orb === hovered ? 1.8 : 1 + 0.1 * Math.sin(time * 2 + orb.userData.phase);
-      orb.scale.setScalar(THREE.MathUtils.lerp(orb.scale.x, target, 0.15));
+      const { halo, phase } = orb.userData;
+      halo.scale.setScalar(1.2 + 0.18 * Math.sin(time * 2 + phase));
+      const target = orb === hovered ? 1.8 : 1;
+      if (Math.abs(orb.scale.x - target) > 0.001) orb.scale.setScalar(THREE.MathUtils.lerp(orb.scale.x, target, 0.2));
     }
     for (const mesh of shaders) mesh.material.uniforms.uTime.value = time;
   });

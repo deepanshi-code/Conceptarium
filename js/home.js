@@ -6,7 +6,7 @@ import { CATALOG, SUBJECTS } from './catalog.js';
 import { buildSky } from './sky.js';
 import { progressFor, summary, resetProgress } from './progress.js';
 import { COURSES } from './courses.js';
-import { hasPractice } from './practice.js';
+import { hasPractice } from './practice/paths.js';
 
 const TRY = ['sections', 'sorting', 'waves', 'structures/tree'];
 
@@ -183,12 +183,24 @@ export function mountHome(root) {
   renderCards();
   scatterTiles($('[data-tiles]'));
 
-  const hero = buildSky($('[data-sky]'), { mode: 'hero', scrollEl: root });
-  const map = buildSky($('[data-map]'), { mode: 'map' });
+  // The two 3D skies compile their shaders when built, which briefly freezes the page. Under the welcome intro
+  // that would make "hello" stutter, so they are built once the intro closes.
+  let hero = null;
+  let map = null;
+  let gone = false;
+  const build = () => {
+    if (gone || hero) return;
+    hero = buildSky($('[data-sky]'), { mode: 'hero', scrollEl: root });
+    map = buildSky($('[data-map]'), { mode: 'map' });
+  };
+  if (document.body.classList.contains('welcome-open')) window.addEventListener('welcome-closed', build, { once: true });
+  else build();
   return () => {
+    gone = true;
+    window.removeEventListener('welcome-closed', build);
     revealer.disconnect();
-    hero.dispose();
-    map.dispose();
+    hero?.dispose();
+    map?.dispose();
   };
 }
 

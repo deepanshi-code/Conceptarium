@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { GENERATORS, checkAnswer, seeded } from '../js/practice/problems.js';
+import { PRACTICE_PATHS } from '../js/practice/paths.js';
 import { COURSES } from '../js/courses.js';
 import { CATALOG } from '../js/catalog.js';
 import { analyzeBeam } from '../js/mech/beam.js';
@@ -102,4 +103,8 @@ test('new generators agree with the simulations and known values', async () => {
   // Copper: FCC, a = 361 pm, M = 63.5 g/mol → about 8.93 g/cm³ (textbook value).
   const rho = (4 * 63.5) / ((361e-10) ** 3 * 6.022e23);
   assert.ok(Math.abs(rho - 8.93) < 0.05);
+});
+
+test('the practice list used by the home page matches the generators', () => {
+  assert.deepEqual([...PRACTICE_PATHS].sort(), Object.keys(GENERATORS).sort());
 });

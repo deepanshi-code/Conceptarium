@@ -4,7 +4,7 @@
 import { GENERATORS, checkAnswer, seeded } from './practice/problems.js';
 import { recordPractice, progressFor } from './progress.js';
 
-export const hasPractice = (path) => Boolean(GENERATORS[path]);
+export { hasPractice } from './practice/paths.js';
 
 // `seed` (from a shared link) reproduces a specific problem; otherwise a random one is made.
 export function renderPractice(panel, concept, viewRoot, seed) {

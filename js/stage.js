@@ -16,12 +16,14 @@ export const COLORS = {
 const registry = new WeakMap();
 export const stageFor = (container) => registry.get(container);
 
-export function createStage(container, { cameraPosition = [4, 3.5, 5], axisLength = 3.5, axes = true, grid = true } = {}) {
+// maxPixelRatio caps the render resolution (soft backdrops don't need retina pixels); maxFps caps the frame rate;
+// staticLabels: the labels only move with the camera, so they are re-laid-out only when the camera moves.
+export function createStage(container, { cameraPosition = [4, 3.5, 5], axisLength = 3.5, axes = true, grid = true, maxPixelRatio = 1.75, maxFps = 0, staticLabels = false } = {}) {
   // Transparent canvas: the page's aurora shows behind every 3D scene.
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setClearColor(0x000000, 0);
   // Start sharp; the frame loop steps the resolution down if this machine can't keep up (see below).
-  let pixelRatio = Math.min(window.devicePixelRatio, 1.75);
+  let pixelRatio = Math.min(window.devicePixelRatio, maxPixelRatio);
   renderer.setPixelRatio(pixelRatio);
   renderer.localClippingEnabled = true; // per-material clipping planes, used to cut solids open
   container.appendChild(renderer.domElement);
@@ -105,10 +107,17 @@ export function createStage(container, { cameraPosition = [4, 3.5, 5], axisLengt
   const frameCallbacks = [];
   const clock = new THREE.Clock();
   let slowFrames = 0;
+  let sinceFrame = 0;
+  let lastLabelKey = '';
+  const minFrame = maxFps ? 1 / maxFps - 0.002 : 0;
   renderer.setAnimationLoop(() => {
+    // Nothing to draw while scrolled away, in a background tab, or under the full-screen welcome intro.
+    if (!onScreen || document.hidden || document.body.classList.contains('welcome-open')) { clock.getDelta(); return; }
+    sinceFrame += clock.getDelta();
+    if (sinceFrame < minFrame) return;
     // Clamp dt so a long pause (tab switch, GC hiccup) doesn't make animations jump.
-    const dt = Math.min(clock.getDelta(), 1 / 20);
-    if (!onScreen || document.hidden) return;
+    const dt = Math.min(sinceFrame, 1 / 20);
+    sinceFrame = 0;
     // Adaptive resolution: after ~1 s of frames slower than 40 fps, render fewer pixels.
     slowFrames = dt > 1 / 40 ? slowFrames + 1 : Math.max(0, slowFrames - 2);
     if (slowFrames > 60 && pixelRatio > 1) {
@@ -127,6 +136,11 @@ export function createStage(container, { cameraPosition = [4, 3.5, 5], axisLengt
     }
     controls.update();
     renderer.render(scene, camera);
+    if (staticLabels) {
+      const key = camera.matrixWorld.elements.join() + camera.projectionMatrix.elements[0] + labelRenderer.domElement.clientWidth;
+      if (key === lastLabelKey) return;
+      lastLabelKey = key;
+    }
     labelRenderer.render(scene, camera);
   });
 

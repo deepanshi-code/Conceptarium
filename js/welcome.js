@@ -69,6 +69,7 @@ export function showWelcome() {
     active = null;
     el.classList.add('leaving');
     document.body.classList.remove('welcome-open');
+    window.dispatchEvent(new Event('welcome-closed')); // the home page builds its 3D skies now (see home.js)
     document.removeEventListener('keydown', onKey, true);
     const done = () => { stopSky(); el.remove(); };
     if (reduce) done();
@@ -123,6 +124,22 @@ function startSky(canvas) {
   resize();
   addEventListener('resize', resize);
   const count = Math.round(Math.min(90, (w * h) / 14000));
+  // One glowing-dot image per colour, drawn once; each frame only stamps them (a live canvas blur per star
+  // every frame was the slowest part of the intro).
+  const sprites = Object.fromEntries([...new Set(colors)].map((c) => {
+    const size = 32;
+    const sp = document.createElement('canvas');
+    sp.width = sp.height = size;
+    const g = sp.getContext('2d');
+    const grad = g.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+    grad.addColorStop(0, c);
+    grad.addColorStop(0.18, c);
+    grad.addColorStop(0.4, `${c}55`);
+    grad.addColorStop(1, `${c}00`);
+    g.fillStyle = grad;
+    g.fillRect(0, 0, size, size);
+    return [c, sp];
+  }));
   const dots = Array.from({ length: count }, () => ({
     x: Math.random(), y: Math.random(), r: 0.6 + Math.random() * 2.2, v: 0.004 + Math.random() * 0.012,
     c: colors[Math.floor(Math.random() * colors.length)], p: Math.random() * Math.PI * 2,
@@ -132,14 +149,9 @@ function startSky(canvas) {
     for (const d of dots) {
       d.y -= d.v / 60;
       if (d.y < -0.02) { d.y = 1.02; d.x = Math.random(); }
-      const a = 0.35 + 0.45 * Math.sin(t / 900 + d.p);
-      ctx.globalAlpha = a;
-      ctx.fillStyle = d.c;
-      ctx.shadowColor = d.c;
-      ctx.shadowBlur = d.r * 6;
-      ctx.beginPath();
-      ctx.arc(d.x * w, d.y * h, d.r, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.globalAlpha = 0.35 + 0.45 * Math.sin(t / 900 + d.p);
+      const size = d.r * 7;
+      ctx.drawImage(sprites[d.c], d.x * w - size / 2, d.y * h - size / 2, size, size);
     }
     raf = requestAnimationFrame(frame);
   };
