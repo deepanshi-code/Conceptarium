@@ -8,6 +8,14 @@ import { startTour } from './tour.js';
 const HELLO = 'M 28 200 C 60 185, 105 130, 112 85 C 117 55, 92 48, 86 75 C 79 108, 76 160, 74 205 C 84 168, 100 142, 120 143 C 140 144, 136 178, 140 196 C 145 212, 165 206, 180 190 C 198 172, 214 150, 198 140 C 182 131, 165 155, 168 180 C 171 205, 200 212, 226 190 C 252 166, 276 112, 276 82 C 276 56, 253 56, 251 86 C 248 122, 246 176, 256 198 C 263 212, 282 206, 296 190 C 322 166, 346 112, 346 82 C 346 56, 323 56, 321 86 C 318 122, 316 176, 326 198 C 333 212, 352 206, 368 188 C 382 168, 398 142, 418 142 C 443 142, 448 176, 433 196 C 418 214, 386 206, 389 180 C 392 158, 421 140, 446 150 C 462 156, 476 152, 492 140';
 
 let active = null;
+let autoShown = false;
+
+/** The automatic intro on opening the site: shown once per page load (boot.js and main.js both ask for it). */
+export function autoWelcome() {
+  if (autoShown) return;
+  autoShown = true;
+  showWelcome();
+}
 
 export function showWelcome() {
   if (active) return;
@@ -44,6 +52,8 @@ export function showWelcome() {
     <button class="welcome-skip" type="button" data-skip>Skip intro</button>`;
   document.body.append(el);
   document.body.classList.add('welcome-open');
+  document.documentElement.classList.remove('intro'); // the intro covers the page now
+  performance.mark('welcome-shown');
   active = el;
 
   const timers = [];

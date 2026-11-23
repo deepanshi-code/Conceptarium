@@ -24,11 +24,22 @@
   <meta name="twitter:card" content="summary_large_image">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <!-- Fonts load without holding up the page (text shows in a system font for a moment, then swaps). -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Space+Grotesk:wght@500;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Space+Grotesk:wght@500;700&display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Space+Grotesk:wght@500;700&display=swap"></noscript>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <!-- Start downloading the 3D library right away instead of after main.js and its imports have loaded. -->
   <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" crossorigin>
   <link rel="stylesheet" href="css/style.css">
+  <script>
+    // Opening the home page plays the welcome intro: keep the page itself hidden until the intro covers it,
+    // so the home page never flashes first. (welcome.js lifts this; the timer is only a safety net.)
+    if (/^(#\/?)?$/.test(location.hash)) {
+      document.documentElement.classList.add('intro');
+      setTimeout(() => document.documentElement.classList.remove('intro'), 8000);
+    }
+  </script>
   <script type="importmap">
     {
       "imports": {
@@ -52,6 +63,7 @@
     </div>
   </header>
   <main id="app" tabindex="-1"></main>
+  <script type="module" src="js/boot.js" async></script>
   <script type="module" src="js/main.js"></script>
 </body>
 </html>

@@ -1084,3 +1084,8 @@ body:not(.in-concept) {
 /* On concept pages the 3D model is the moving thing: hold the background glow still there, so the browser
    doesn't have to re-blur the see-through panels over a moving background on every frame. */
 body.in-concept::before { animation-play-state: paused; }
+
+/* Before the welcome intro has appeared (see index.html), show only the dark night background. */
+html.intro body { background: #05061a; }
+html.intro .topbar, html.intro #app, html.intro body::before { visibility: hidden; }
+

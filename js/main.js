@@ -12,7 +12,7 @@ import { hasPractice } from './practice/paths.js';
 
 let practiceModule = null;
 const loadPractice = () => (practiceModule ??= import('./practice.js'));
-import { showWelcome } from './welcome.js';
+import { showWelcome, autoWelcome } from './welcome.js';
 import { stageFor } from './stage.js';
 import { CATALOG, SUBJECTS, findByPath } from './catalog.js';
 import { parseHash, applyState, shareLink, reportLink } from './share.js';
@@ -345,5 +345,5 @@ window.addEventListener('hashchange', render);
 window.addEventListener('concept-change', () => refreshChrome());
 // Opening the site on the home page plays the welcome intro (not when arriving through a link to a concept,
 // and not when moving back to the home page inside the site).
-if (!currentPath()) showWelcome();
+if (!currentPath()) autoWelcome(); // usually already started by boot.js
 render();
