@@ -18,6 +18,8 @@ The landing page has a northern-lights hero with a 3D planet horizon, a "concept
 
 **Welcome and guided tour:** opening the site on the home page plays a short intro (a cursive "hello" drawn in one stroke over a starry sky, then "Welcome to Conceptarium"). From there students can take a 10-step guided tour that dims the page and spotlights the real controls one at a time: search, the concept sky, filters, a concept card, Ask, then a live 3D model, its toolbar and the Explore / Practice / Quiz tabs (`js/welcome.js`, `js/tour.js`). Both are skippable (Esc), and respect reduced-motion settings.
 
+**Install and offline:** Conceptarium is installable as an app (an "Install app" button appears in browsers that support it). A service worker (`sw.js`) saves the site as you use it: network first when online, the saved copy offline, so concepts you have opened keep working without internet.
+
 **Ask:** the ✦ Ask button answers questions like "how to find max BMD" or "what is aliasing" from Conceptarium's own material: each concept's big idea, its how-to steps, the quiz explanations and a worked practice example. It is a small search engine (BM25 ranking, `js/ask/engine.js`), not an AI: it runs in the browser, works offline, costs nothing, and says plainly when a topic isn't covered (with a link to suggest it).
 
 **One clear layout for every concept:** the 3D model on the left; on the right, the title and a one-line idea (with where you meet it in real life), then three numbered tabs: **1 Explore** (how-to steps, the model's controls and results), **2 Practice** (a numerical problem) and **3 Quiz**. The longer explanation is folded under "Explain more". The 3D view itself is left uncovered, with labelled Reset view / Full screen / Save image / Share buttons.

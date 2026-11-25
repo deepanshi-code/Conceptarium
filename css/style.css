@@ -1089,3 +1089,12 @@ body.in-concept::before { animation-play-state: paused; }
 html.intro body { background: #05061a; }
 html.intro .topbar, html.intro #app, html.intro body::before { visibility: hidden; }
 
+
+/* Install app button (shown only when the browser can install the site) and the offline note. */
+.install-btn { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; background: transparent; color: var(--accent-2); }
+.install-btn span { color: var(--text); }
+.install-btn[hidden] { display: none; }
+.net-toast { position: fixed; left: 50%; bottom: 20px; z-index: 120; transform: translateX(-50%); max-width: calc(100vw - 32px); padding: 10px 16px; border-radius: 999px; border: 1px solid var(--border-strong); background: var(--surface-solid); color: var(--text); font-size: 14px; box-shadow: 0 20px 40px -20px rgba(0, 0, 0, 0.8); animation: view-in 0.2s ease-out; }
+@media (max-width: 820px) {
+  .install-btn span { display: none; }
+}

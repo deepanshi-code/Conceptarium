@@ -147,7 +147,9 @@ function showProblem(kind, err) {
   app.className = 'home-view';
   const text = {
     webgl: ['Your browser can\'t show 3D here', 'This page needs WebGL. Try turning on <b>hardware acceleration</b> in your browser settings, updating your browser, or opening it in Chrome, Edge or Firefox.'],
-    load: ['This concept didn\'t load', 'Check your internet connection and reload the page. If it keeps happening, please report it.'],
+    load: navigator.onLine
+      ? ['This concept didn\'t load', 'Check your internet connection and reload the page. If it keeps happening, please report it.']
+      : ['You\'re offline', 'This concept hasn\'t been opened on this device yet, so it isn\'t saved. Concepts you have opened before still work: go back to all concepts and pick one marked ✓.'],
     crash: ['Something went wrong in this concept', 'It\'s a bug on our side, not yours. Please report it so it can be fixed.'],
   }[kind];
   const detail = err ? `\n**Error:** \`${String(err.message ?? err).slice(0, 300)}\`` : '';
@@ -347,3 +349,38 @@ window.addEventListener('concept-change', () => refreshChrome());
 // and not when moving back to the home page inside the site).
 if (!currentPath()) autoWelcome(); // usually already started by boot.js
 render();
+
+// --- Install as an app, and offline use ---------------------------------------------------------------------
+// sw.js saves the site as you use it, so concepts you have opened work without internet. (Service workers only
+// run on https or localhost.)
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => { /* offline features off */ }));
+}
+// Browsers that can install the site fire beforeinstallprompt: show our own "Install app" button for it.
+let installPrompt = null;
+const installBtn = document.querySelector('[data-install]');
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  installPrompt = e;
+  installBtn.hidden = false;
+});
+installBtn?.addEventListener('click', async () => {
+  if (!installPrompt) return;
+  installPrompt.prompt();
+  await installPrompt.userChoice;
+  installPrompt = null;
+  installBtn.hidden = true;
+});
+window.addEventListener('appinstalled', () => { installBtn.hidden = true; });
+// A short note when the connection drops or comes back.
+function connectionNote(text) {
+  document.querySelector('.net-toast')?.remove();
+  const note = document.createElement('div');
+  note.className = 'net-toast';
+  note.setAttribute('role', 'status');
+  note.textContent = text;
+  document.body.append(note);
+  setTimeout(() => note.remove(), 5000);
+}
+window.addEventListener('offline', () => connectionNote('You\'re offline. Concepts you have opened before still work.'));
+window.addEventListener('online', () => connectionNote('Back online.'));
